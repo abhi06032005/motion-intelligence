@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-10-22T08:19:47Z",
+  "viewpoints_evaluated": [
+    "frontal (0\u00b0)",
+    "oblique (45\u00b0)",
+    "lateral (90\u00b0)"
+  ],
+  "total_projected_streams": 600,
+  "summary_metrics": [
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 31.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 31.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    }
+  ]
+}

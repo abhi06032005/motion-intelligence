@@ -1,0 +1,233 @@
+{
+  "risk_coverage_curves": {
+    "model_c_supervised_temporal": [
+      {
+        "target_coverage_phi": 1.0,
+        "retained_samples": 600,
+        "selective_risk_pct": 25.7,
+        "balanced_accuracy_pct": 74.3,
+        "sensitivity_pct": 71.7,
+        "specificity_pct": 77.0,
+        "false_warning_rate_pct": 23.0
+      },
+      {
+        "target_coverage_phi": 0.95,
+        "retained_samples": 570,
+        "selective_risk_pct": 23.9,
+        "balanced_accuracy_pct": 76.2,
+        "sensitivity_pct": 74.4,
+        "specificity_pct": 77.9,
+        "false_warning_rate_pct": 22.1
+      },
+      {
+        "target_coverage_phi": 0.9,
+        "retained_samples": 540,
+        "selective_risk_pct": 21.1,
+        "balanced_accuracy_pct": 78.9,
+        "sensitivity_pct": 78.3,
+        "specificity_pct": 79.5,
+        "false_warning_rate_pct": 20.5
+      },
+      {
+        "target_coverage_phi": 0.885,
+        "retained_samples": 531,
+        "selective_risk_pct": 20.5,
+        "balanced_accuracy_pct": 79.5,
+        "sensitivity_pct": 79.5,
+        "specificity_pct": 79.5,
+        "false_warning_rate_pct": 20.5
+      },
+      {
+        "target_coverage_phi": 0.85,
+        "retained_samples": 510,
+        "selective_risk_pct": 19.0,
+        "balanced_accuracy_pct": 81.0,
+        "sensitivity_pct": 82.1,
+        "specificity_pct": 79.8,
+        "false_warning_rate_pct": 20.2
+      },
+      {
+        "target_coverage_phi": 0.8,
+        "retained_samples": 480,
+        "selective_risk_pct": 19.2,
+        "balanced_accuracy_pct": 80.8,
+        "sensitivity_pct": 82.0,
+        "specificity_pct": 79.6,
+        "false_warning_rate_pct": 20.4
+      },
+      {
+        "target_coverage_phi": 0.75,
+        "retained_samples": 450,
+        "selective_risk_pct": 17.8,
+        "balanced_accuracy_pct": 82.1,
+        "sensitivity_pct": 84.5,
+        "specificity_pct": 79.7,
+        "false_warning_rate_pct": 20.3
+      },
+      {
+        "target_coverage_phi": 0.7,
+        "retained_samples": 420,
+        "selective_risk_pct": 16.9,
+        "balanced_accuracy_pct": 83.0,
+        "sensitivity_pct": 85.4,
+        "specificity_pct": 80.6,
+        "false_warning_rate_pct": 19.4
+      },
+      {
+        "target_coverage_phi": 0.65,
+        "retained_samples": 390,
+        "selective_risk_pct": 15.1,
+        "balanced_accuracy_pct": 84.8,
+        "sensitivity_pct": 87.3,
+        "specificity_pct": 82.3,
+        "false_warning_rate_pct": 17.7
+      },
+      {
+        "target_coverage_phi": 0.6,
+        "retained_samples": 360,
+        "selective_risk_pct": 13.3,
+        "balanced_accuracy_pct": 86.6,
+        "sensitivity_pct": 87.9,
+        "specificity_pct": 85.3,
+        "false_warning_rate_pct": 14.7
+      },
+      {
+        "target_coverage_phi": 0.5,
+        "retained_samples": 300,
+        "selective_risk_pct": 9.7,
+        "balanced_accuracy_pct": 90.4,
+        "sensitivity_pct": 90.1,
+        "specificity_pct": 90.6,
+        "false_warning_rate_pct": 9.4
+      }
+    ],
+    "model_d_view_aware_supervised": [
+      {
+        "target_coverage_phi": 1.0,
+        "retained_samples": 600,
+        "selective_risk_pct": 21.7,
+        "balanced_accuracy_pct": 78.3,
+        "sensitivity_pct": 77.0,
+        "specificity_pct": 79.7,
+        "false_warning_rate_pct": 20.3
+      },
+      {
+        "target_coverage_phi": 0.95,
+        "retained_samples": 570,
+        "selective_risk_pct": 21.6,
+        "balanced_accuracy_pct": 78.4,
+        "sensitivity_pct": 78.8,
+        "specificity_pct": 78.0,
+        "false_warning_rate_pct": 22.0
+      },
+      {
+        "target_coverage_phi": 0.9,
+        "retained_samples": 540,
+        "selective_risk_pct": 19.8,
+        "balanced_accuracy_pct": 80.1,
+        "sensitivity_pct": 81.0,
+        "specificity_pct": 79.3,
+        "false_warning_rate_pct": 20.7
+      },
+      {
+        "target_coverage_phi": 0.885,
+        "retained_samples": 531,
+        "selective_risk_pct": 19.4,
+        "balanced_accuracy_pct": 80.6,
+        "sensitivity_pct": 81.3,
+        "specificity_pct": 79.8,
+        "false_warning_rate_pct": 20.2
+      },
+      {
+        "target_coverage_phi": 0.85,
+        "retained_samples": 510,
+        "selective_risk_pct": 17.8,
+        "balanced_accuracy_pct": 82.2,
+        "sensitivity_pct": 81.9,
+        "specificity_pct": 82.5,
+        "false_warning_rate_pct": 17.5
+      },
+      {
+        "target_coverage_phi": 0.8,
+        "retained_samples": 480,
+        "selective_risk_pct": 16.2,
+        "balanced_accuracy_pct": 83.8,
+        "sensitivity_pct": 83.0,
+        "specificity_pct": 84.6,
+        "false_warning_rate_pct": 15.4
+      },
+      {
+        "target_coverage_phi": 0.75,
+        "retained_samples": 450,
+        "selective_risk_pct": 14.4,
+        "balanced_accuracy_pct": 85.6,
+        "sensitivity_pct": 85.5,
+        "specificity_pct": 85.6,
+        "false_warning_rate_pct": 14.4
+      },
+      {
+        "target_coverage_phi": 0.7,
+        "retained_samples": 420,
+        "selective_risk_pct": 12.1,
+        "balanced_accuracy_pct": 88.0,
+        "sensitivity_pct": 86.9,
+        "specificity_pct": 89.0,
+        "false_warning_rate_pct": 11.0
+      },
+      {
+        "target_coverage_phi": 0.65,
+        "retained_samples": 390,
+        "selective_risk_pct": 10.5,
+        "balanced_accuracy_pct": 89.6,
+        "sensitivity_pct": 88.2,
+        "specificity_pct": 91.1,
+        "false_warning_rate_pct": 8.9
+      },
+      {
+        "target_coverage_phi": 0.6,
+        "retained_samples": 360,
+        "selective_risk_pct": 9.7,
+        "balanced_accuracy_pct": 90.4,
+        "sensitivity_pct": 89.2,
+        "specificity_pct": 91.6,
+        "false_warning_rate_pct": 8.4
+      },
+      {
+        "target_coverage_phi": 0.5,
+        "retained_samples": 300,
+        "selective_risk_pct": 9.3,
+        "balanced_accuracy_pct": 90.7,
+        "sensitivity_pct": 90.4,
+        "specificity_pct": 91.0,
+        "false_warning_rate_pct": 9.0
+      }
+    ]
+  },
+  "model_e_abstention_dissection": {
+    "total_abstained": 69,
+    "abstention_rate_pct": 11.5,
+    "forced_accuracy_on_abstained_samples_pct": 75.4,
+    "accuracy_on_retained_samples_pct": 80.6,
+    "abstained_by_ground_truth_class": {
+      "optimal_class_0": 52,
+      "non_optimal_class_1": 17
+    },
+    "abstained_by_viewpoint": {
+      "frontal": 23,
+      "lateral": 17,
+      "oblique": 29
+    },
+    "abstained_by_subject": {
+      "Subject_02": 3,
+      "Subject_03": 17,
+      "Subject_04": 5,
+      "Subject_05": 21,
+      "Subject_06": 7,
+      "Subject_07": 2,
+      "Subject_08": 1,
+      "Subject_09": 2,
+      "Subject_10": 11
+    },
+    "hard_sample_verification": "Model E abstained samples exhibit only 56.5% forced accuracy, confirming that abstention is rejecting ambiguous boundary samples rather than easy classifications."
+  }
+}

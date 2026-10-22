@@ -1,0 +1,1558 @@
+{
+  "timestamp_utc": "2026-10-22T05:52:15.987174+00:00",
+  "evidence_type": "synthetic_fixture_execution",
+  "historical_sha256": "7fd4d232d6c122945096f86ce3f95cc9e9db48b90bd5ac7897967c6b1a1317a4",
+  "environment": {
+    "python": "3.11.15 (main, Jul 18 2026, 17:06:27) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "numpy": "2.4.6"
+  },
+  "source_sha256": {
+    "backend/api/__init__.py": "b5ff93f2c8331add270f69fc33147e8363ea7de41248c02708ff5c105b0b723c",
+    "backend/api/research_routes.py": "59b310a408ac9c92a1393205190a538a47b5ff7d21fb7ff01f786e740f2e27ba",
+    "backend/api/routes.py": "f11170e494c3aadf1ed701a7df7440a2e9493347308879550f21780f489bca89",
+    "backend/api/upload.py": "43e66d9cbf3585b5f5b22bf10eb0b0a49574c9666589f8b74bb9d470619ebaab",
+    "backend/api/yoga_routes.py": "21ed04f803dab69662e9d49a7d455bb7944b79dc892ea3015fbef0311663a803",
+    "backend/config/__init__.py": "a75ece38de66eef2f870a75d75c561714448806d8dc762cbb3caffb1935615e0",
+    "backend/config/settings.py": "390f0f9e4eabf04d34c18b77d4c05be51c2ce3d5b03c08fdc02a4f15db4b3919",
+    "backend/database/__init__.py": "0fe13efd67f3fe2fb3fdffd2ee786ba8b46b95529bb3a30c18b672359d0957d2",
+    "backend/database/client.py": "b6884e7d2680cc7aabe379b2b8ea81ec175a96916976478d6ac4f9d98eaf2241",
+    "backend/exercises/__init__.py": "9ec11b5e9d72c84b9a0507e319d4c869ae842978d2c6dc6f2605fd8b8dfa5a2c",
+    "backend/exercises/base.py": "f22214769620507e9aae93afefadf0cac3e6772378eed880d943bee86e84654c",
+    "backend/exercises/bicep_curl.py": "622337fcfefe1187a04c0983a384045455c8952e8349505cb56ca141d312d43a",
+    "backend/exercises/pushup.py": "cfa3ea9c35cbf6c0ca8575905f80b1ee7484466e871e32e016fdb706e4891f83",
+    "backend/exercises/registry.py": "4c396bc1d296f9101b10c977fd1f4b84692e26b163553bb3c9248e8817545b78",
+    "backend/exercises/squat.py": "3ab77c08832d434d3cb6e92783cb28857fc8178fd0e52ce9c1bb92823aa40fd8",
+    "backend/exercises/yoga_poses.py": "00f5fc1276df4205cfe984252e21f6d1ea1b05bb158895f6dadaeb8cc6ccc88a",
+    "backend/exercises/yoga_registry.py": "c68e9402f24a224ed21ad3ab599b643f0d0a803388f98c53b6e9629e28114bc6",
+    "backend/main.py": "a2c4da4db617db934344edad0e86906fc6fcb5aa2cdffbf6fc949701f8411124",
+    "backend/models/__init__.py": "4ceb15be39d057456e512e14655510dcc2377d11a5957053b0499476f1547a94",
+    "backend/models/model_a_baseline.py": "f74539e9973d7955a04b18b286c3cdf85ee39fbd315785a526737c4f8fcbac8e",
+    "backend/models/model_b_view_gated.py": "332f20693b4c2e51cc571764cf44c671a4ff6c7adf322fbacf5d877731d366c2",
+    "backend/models/model_c_temporal.py": "2eaa03a2ed45e5c950ac402a62246d54a478e954dce85a50f09ee00c459eb93d",
+    "backend/models/model_d_calibrated.py": "a2c1e698b1d6fb61893e62e77738ef6786d8580e6575a7eb210377917bfcc7aa",
+    "backend/models/model_interface.py": "cf4f204e3142abebf38e8f9c5f4b66bd310d33e792f7ec41a587e941342c1205",
+    "backend/pipeline/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/pipeline/confidence.py": "731740450097f33597fc1d8e422f329bac6064b989b429c62682dd7e0a9b0d64",
+    "backend/pipeline/features.py": "3f4f770f9767a27cfcb9859265d84c3ddeb5c75f167014b2d82e4337e4d2cb44",
+    "backend/pipeline/form_evaluator.py": "adfb66ec74bf3dc75a66a83bf2247e9943391c37b1dc017ecb625569f5569b3f",
+    "backend/pipeline/hmm.py": "c3a80a814c48615a05bc4181e21f60e784d5230d22a5070c6b3560787ca27438",
+    "backend/pipeline/hold_timer.py": "02efbd6d9d7fa9a3fd4059f62f3db26ccc528832ec1955a59cdc9c11a5a95c52",
+    "backend/pipeline/kalman.py": "cf941b4089dd17d85aa6e9810d9e6ab3585daa039c1237794ccb7a978a38afa8",
+    "backend/pipeline/motion_detector.py": "ca15f7b32f5325cbd18a9ddcd90a75a478b86836091e0bb28935e73881d88b3a",
+    "backend/pipeline/rep_counter.py": "8f3d22febca65d7abdbd7068a307920b6df0b0ee393398db558ba56eef0e5ca6",
+    "backend/pipeline/temporal_assessor.py": "a2af435c369efc2eba1879716ac3bba99fef84782541d4c4e3542a72a5432767",
+    "backend/pipeline/uncertainty_gate.py": "90a2f5377b5c9ea64a07f96096e575e5ce98ce4d5b852fa9a7e3fae1a0c417c8",
+    "backend/pipeline/validator.py": "334d5b03a6fdd8ad0fbb717ef393228536b01014bda824b80f174b844a55ace5",
+    "backend/pipeline/view_classifier.py": "f493bcbb370a80c6ebc831ac872399d28b5e992614bb5659689070be0f22c36b",
+    "backend/scripts/ws_replay_smoke.py": "a4af38ae1e9688ae8fda7010a1cdbdb0f7c2a1b92e9162f561d3d0c3ebd95103",
+    "backend/smoke_test.py": "d72b9161e1e34a7b3414683bd5ecea696979876fb2842fa719ec0f06096c4078",
+    "backend/state_machine/__init__.py": "db2306525d3a9d6340eb35c349ffcf13bf2bec337248712cafe4176203b300e9",
+    "backend/state_machine/manager.py": "6fac25c57ee5234353ef64d1b2a4b71a75b9bb7f8484db6e7bec08119e5c641a",
+    "backend/state_machine/yoga_manager.py": "854772344c94f7f76c2fa422423c43d580b34f77fa94a319e1d8044cd350238c",
+    "backend/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/tests/conftest.py": "b49fb7ed50aac211b0d62302db21119605bb7c8fb7aba2963766a4bed8e0ebbd",
+    "backend/tests/test_classifier_guards.py": "e694af57d8c018086e08dcb6cbae7677a1f3012a80eaa0525c6145bd8a098f42",
+    "backend/tests/test_confidence.py": "4cc0e9d41a531aceb0acffbfbc72015cb011869b20e890183619c98991f497de",
+    "backend/tests/test_features.py": "5776dde7215e9f558071aa7278f437dc528657aa7e01260013477e7d8c0ee326",
+    "backend/tests/test_form_evaluator.py": "82213c9f0a5e8c8816a4e990242b9558b1ed3955473d1fe9a9d34cfea9865b54",
+    "backend/tests/test_hmm.py": "12ab20423f474b98c63a0e5f7ff653b1e2b6f0f5e2cad4bfa47474a85031fd17",
+    "backend/tests/test_hold_timer.py": "e9bbc0faeb53efc8abe598ea1d2642ddec53dda64cbdf34edb07166dcc0855c2",
+    "backend/tests/test_kalman.py": "2b0f5a4513bd8578d4baffe4461c42574331597426cf904933e541bf7d713df5",
+    "backend/tests/test_partial_detection.py": "70fce42748472d97d840f83c0449c3a23b9b75973402bc19b47b4dd666ea92ef",
+    "backend/tests/test_production_contracts.py": "048306c0f29bd09dda4c35112f3fcfa5ca728dff4127929eb6ed57034eb110e3",
+    "backend/tests/test_rep_counter.py": "71d4ed38583c314c69d2f23e9021a2268162cfe0dbeb0dcd18672c2942322800",
+    "backend/tests/test_research_api.py": "509f88432ea7b3849589a75594b251ee8ff1f319360ca53c3c9d35545ed0e5f6",
+    "backend/tests/test_sports2d_adapter.py": "16fc4b60e844e885a5fb082de17d04283df8ca6348e4343d62212b5b86cfa67d",
+    "backend/tests/test_uncertainty_gate.py": "b546477bf933aaac25199c567ae0b3b272669fc8025a10517af820422b3c242e",
+    "backend/tests/test_validator.py": "4ddf26fa38a8646a57b30f0efee976dfcefaa34ad7adc90c56ca37a542886a22",
+    "backend/tests/test_view_classifier.py": "6e44b594c978e6f177d161ff9c1249ad9f01f7f9e428343dca562491945d3964",
+    "backend/tests/test_yoga_poses.py": "3861c487d9eedfa22ccdcf6591b4b11cf04c047996596da58d3d40189b9daaf3",
+    "backend/tests/test_yoga_ws.py": "91d3e46ba432f0c6898203dc82d4500d8fa3f657ba1ece4db6b144af3e2d7f72",
+    "backend/utils/__init__.py": "d5275ae07ef2aee652d362d44c2c1d6e1dc81dd7575a7aef92ff29e7397582de",
+    "research/adapters/sports2d_adapter.py": "1ddc7b2ecda72181ebe1c27853109e68092c643c5da9a26de626582b151a6ade",
+    "research/datasets/benchmark_fixtures.py": "7339aa9e9041a386e379911b0d961e71221cacb007188745b5cc15fc88c99527",
+    "research/datasets/canonical_schema.py": "5d2163f3edb656d4495c89e7059974c2634b3bec5f0b95ec6d845ba743a6c4d1",
+    "research/evaluation/audit_results.py": "707a8d60ee8c7f3efc78782d3142f094b5831f4ee3f7307bba224acde8eeee05",
+    "research/evaluation/metrics.py": "66641d7c9392f61649a88d24f478275af99638cacc6adddd4dad0a7f65064e33",
+    "research/evaluation/run_experiments.py": "fc84b6ac156c106e2ca4c1b308387dcd47152f6ef3fb37adf16995381266b7dd",
+    "backend/data/pose_library/alternate_bicep_curl.json": "28534a3d60a365b0be2884bda74be3ebbf6b9a5a13010363da8fc484fd47392d",
+    "backend/data/pose_library/bicep_curl.json": "82410ffe0cb23a283a2f84471a5fe631feb23cf0d24fdaa556417374850c9dc1",
+    "backend/data/pose_library/idle.json": "2cae819f3e028d2260d2e669eb9ee782d18e88f5b9580929119beef17c553f7d",
+    "backend/data/pose_library/pushup.json": "83a6061c7fcc2d25cc42d38ae4ea7aad0c5d29795489cb836bd4a5c508bf6a9f",
+    "backend/data/pose_library/squat.json": "ee17f3993e5a4fed1f661d2e14097384bda5687ee03bd0ade33525752da6c3e7"
+  },
+  "manifest": [
+    {
+      "trial_id": "Subject_09__trial_01_optimal_lateral",
+      "subject_id": "Subject_09",
+      "session_id": "trial_01_optimal_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_09__trial_01_optimal_lateral.npz",
+      "file_sha256": "4567370657e19965e5e39e1656402aefd0145785c2d6e72a5c6638d833a8c1c5",
+      "input_content_sha256": "2c9547f24461b5c4ea9385f62181eac9fd7ca2cee62d6dea9328ca668fabc48a",
+      "legacy_metadata_hash": "f037f89d14f60ca9aeb20b1083ed14d8231dd435d0d62cae0a31fac8c61eb15e"
+    },
+    {
+      "trial_id": "Subject_09__trial_02_valgus_frontal",
+      "subject_id": "Subject_09",
+      "session_id": "trial_02_valgus_frontal",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_knee_valgus",
+      "declared_view": "frontal",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_09__trial_02_valgus_frontal.npz",
+      "file_sha256": "88083c89229a3c4b32d4469dbb9d5969f1615f5f790ea7c0776d7f428a5ca823",
+      "input_content_sha256": "3fcda1c22cf3eccbcc6acab6cc5434af52fb5a616cb3a863ceb9c94f9fbe3be0",
+      "legacy_metadata_hash": "1ff8fd7185c4596c4935a95bfede58c759a4312d1cfa6a054863c234bf336fc1"
+    },
+    {
+      "trial_id": "Subject_09__trial_03_shallow_lateral",
+      "subject_id": "Subject_09",
+      "session_id": "trial_03_shallow_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_shallow_depth",
+      "declared_view": "lateral",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_09__trial_03_shallow_lateral.npz",
+      "file_sha256": "d827cb2644d37ea8adb8e8366d156bd43b65bdc86fc2ae037821624deed097f0",
+      "input_content_sha256": "e5d25eb94693a6b35adf97cb708c3611ee1510063d0436b442d210b554e38aa2",
+      "legacy_metadata_hash": "aa87f39c438b63a0384f0bcd69b1bcfd33a69d9bd718ca033cdc86caba32dace"
+    },
+    {
+      "trial_id": "Subject_09__trial_04_pushup_lateral",
+      "subject_id": "Subject_09",
+      "session_id": "trial_04_pushup_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "RepCount-MOCK",
+      "exercise": "pushup",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 270,
+      "reps": 4,
+      "input_file": "inputs\\Subject_09__trial_04_pushup_lateral.npz",
+      "file_sha256": "149c0bc94aa10b453baf344caa2179ef54ef98fc4b07301d9fdf65b4306176b4",
+      "input_content_sha256": "fc5aa8422f3dc09cd51ac1a3e691e004b33fd453cae09808e017766816935e42",
+      "legacy_metadata_hash": "d7c88bf39870cbb368116582de482c5baac03950a4763595de2891c37932655e"
+    },
+    {
+      "trial_id": "Subject_09__trial_05_pushup_hipsag",
+      "subject_id": "Subject_09",
+      "session_id": "trial_05_pushup_hipsag",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "RepCount-MOCK",
+      "exercise": "pushup",
+      "protocol": "non_optimal_hip_sag",
+      "declared_view": "lateral",
+      "frames": 210,
+      "reps": 3,
+      "input_file": "inputs\\Subject_09__trial_05_pushup_hipsag.npz",
+      "file_sha256": "689bc3b15ae124118d1f3e1e79d254a43e3ddccc080f4ea646445afa3493198d",
+      "input_content_sha256": "8c7e4ff6c684ec65bc86bac9de37b8c09f604bdf57784e2514be12640c9ad0b4",
+      "legacy_metadata_hash": "0a46a0efd5b5552e3a5b005a02a5b97d45c4831e816425de4d490f608e75dc41"
+    },
+    {
+      "trial_id": "Subject_09__trial_06_curl_optimal",
+      "subject_id": "Subject_09",
+      "session_id": "trial_06_curl_optimal",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "bicep_curl",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 294,
+      "reps": 4,
+      "input_file": "inputs\\Subject_09__trial_06_curl_optimal.npz",
+      "file_sha256": "1e460b4293c92bced60a88ba62952e31408828e5b97e09fc7710fcebe455402b",
+      "input_content_sha256": "dc7cb508335172fb03bd29de1c239503ed3108d806225820f102b005328e872a",
+      "legacy_metadata_hash": "45863215152160930c74a93add2b7cd322662301a13d465132feafe5cbf29d17"
+    },
+    {
+      "trial_id": "Subject_09__trial_07_squat_frontal_ambiguous",
+      "subject_id": "Subject_09",
+      "session_id": "trial_07_squat_frontal_ambiguous",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_shallow_depth",
+      "declared_view": "frontal",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_09__trial_07_squat_frontal_ambiguous.npz",
+      "file_sha256": "8d20b3d4d61aa8fd470ca566a9c7c4d1614e9dba73ae8ef358dc095a875e6e9d",
+      "input_content_sha256": "b077dfc3146bb7a5e0842d5fc800d9d12343a4ed50be4d4f2a4078c765cec3f3",
+      "legacy_metadata_hash": "6f959b70824742f04e0291e696b76f0c9330e160a8c7e6e3c134e0a23e6b4485"
+    },
+    {
+      "trial_id": "Subject_09__trial_08_squat_occluded",
+      "subject_id": "Subject_09",
+      "session_id": "trial_08_squat_occluded",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "occluded_stress",
+      "declared_view": "lateral",
+      "frames": 180,
+      "reps": 2,
+      "input_file": "inputs\\Subject_09__trial_08_squat_occluded.npz",
+      "file_sha256": "0e40a8da906bdc25dd5f83af8fbe436b65fc71867fccabd3350214be41ad89a4",
+      "input_content_sha256": "cdd63ce37b985058518e0306e3eff71ef6af4f5c8b7e566c714bd8aed5a27327",
+      "legacy_metadata_hash": "0742de07fcfc802bd2c2f6ff49b15f63b1ac74a94ede3603a96c3ed07514b474"
+    },
+    {
+      "trial_id": "Subject_10__trial_01_optimal_lateral",
+      "subject_id": "Subject_10",
+      "session_id": "trial_01_optimal_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_10__trial_01_optimal_lateral.npz",
+      "file_sha256": "4567370657e19965e5e39e1656402aefd0145785c2d6e72a5c6638d833a8c1c5",
+      "input_content_sha256": "2c9547f24461b5c4ea9385f62181eac9fd7ca2cee62d6dea9328ca668fabc48a",
+      "legacy_metadata_hash": "e0cfdd66784148f214e9cf58a3a08a61c36ab0f2357fb6eb4b57ef45e3d8c2f9"
+    },
+    {
+      "trial_id": "Subject_10__trial_02_valgus_frontal",
+      "subject_id": "Subject_10",
+      "session_id": "trial_02_valgus_frontal",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_knee_valgus",
+      "declared_view": "frontal",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_10__trial_02_valgus_frontal.npz",
+      "file_sha256": "88083c89229a3c4b32d4469dbb9d5969f1615f5f790ea7c0776d7f428a5ca823",
+      "input_content_sha256": "3fcda1c22cf3eccbcc6acab6cc5434af52fb5a616cb3a863ceb9c94f9fbe3be0",
+      "legacy_metadata_hash": "c9d4cd9a85bf4b66834b52f8f83fff061d153ea9b6b4bc4a273d6935aeee1e94"
+    },
+    {
+      "trial_id": "Subject_10__trial_03_shallow_lateral",
+      "subject_id": "Subject_10",
+      "session_id": "trial_03_shallow_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_shallow_depth",
+      "declared_view": "lateral",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_10__trial_03_shallow_lateral.npz",
+      "file_sha256": "d827cb2644d37ea8adb8e8366d156bd43b65bdc86fc2ae037821624deed097f0",
+      "input_content_sha256": "e5d25eb94693a6b35adf97cb708c3611ee1510063d0436b442d210b554e38aa2",
+      "legacy_metadata_hash": "500f984d769f289fb0a9b4ea3e7bfb520cad1a7c805ef9a22200628f9a8e760f"
+    },
+    {
+      "trial_id": "Subject_10__trial_04_pushup_lateral",
+      "subject_id": "Subject_10",
+      "session_id": "trial_04_pushup_lateral",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "RepCount-MOCK",
+      "exercise": "pushup",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 270,
+      "reps": 4,
+      "input_file": "inputs\\Subject_10__trial_04_pushup_lateral.npz",
+      "file_sha256": "149c0bc94aa10b453baf344caa2179ef54ef98fc4b07301d9fdf65b4306176b4",
+      "input_content_sha256": "fc5aa8422f3dc09cd51ac1a3e691e004b33fd453cae09808e017766816935e42",
+      "legacy_metadata_hash": "4a75cd1e402fcab5d581a1bb9c840362cc9495496bb9d93d0f5ff6f675b7fe88"
+    },
+    {
+      "trial_id": "Subject_10__trial_05_pushup_hipsag",
+      "subject_id": "Subject_10",
+      "session_id": "trial_05_pushup_hipsag",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "RepCount-MOCK",
+      "exercise": "pushup",
+      "protocol": "non_optimal_hip_sag",
+      "declared_view": "lateral",
+      "frames": 210,
+      "reps": 3,
+      "input_file": "inputs\\Subject_10__trial_05_pushup_hipsag.npz",
+      "file_sha256": "689bc3b15ae124118d1f3e1e79d254a43e3ddccc080f4ea646445afa3493198d",
+      "input_content_sha256": "8c7e4ff6c684ec65bc86bac9de37b8c09f604bdf57784e2514be12640c9ad0b4",
+      "legacy_metadata_hash": "a63708830314677903066fabfb1d4f745680ed7d9d9daa5b1abfa12cfeadbb14"
+    },
+    {
+      "trial_id": "Subject_10__trial_06_curl_optimal",
+      "subject_id": "Subject_10",
+      "session_id": "trial_06_curl_optimal",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "bicep_curl",
+      "protocol": "optimal",
+      "declared_view": "lateral",
+      "frames": 294,
+      "reps": 4,
+      "input_file": "inputs\\Subject_10__trial_06_curl_optimal.npz",
+      "file_sha256": "1e460b4293c92bced60a88ba62952e31408828e5b97e09fc7710fcebe455402b",
+      "input_content_sha256": "dc7cb508335172fb03bd29de1c239503ed3108d806225820f102b005328e872a",
+      "legacy_metadata_hash": "fc2c577475c219cfaebda124d1b49ce9bf3c7c325c23cb68165b0770e9a7146a"
+    },
+    {
+      "trial_id": "Subject_10__trial_07_squat_frontal_ambiguous",
+      "subject_id": "Subject_10",
+      "session_id": "trial_07_squat_frontal_ambiguous",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "non_optimal_shallow_depth",
+      "declared_view": "frontal",
+      "frames": 255,
+      "reps": 3,
+      "input_file": "inputs\\Subject_10__trial_07_squat_frontal_ambiguous.npz",
+      "file_sha256": "8d20b3d4d61aa8fd470ca566a9c7c4d1614e9dba73ae8ef358dc095a875e6e9d",
+      "input_content_sha256": "b077dfc3146bb7a5e0842d5fc800d9d12343a4ed50be4d4f2a4078c765cec3f3",
+      "legacy_metadata_hash": "af3feb9d6b05325ae7d0348d405aaf479da8201b36d22b837e8bb4b1dc408c1b"
+    },
+    {
+      "trial_id": "Subject_10__trial_08_squat_occluded",
+      "subject_id": "Subject_10",
+      "session_id": "trial_08_squat_occluded",
+      "kind": "synthetic_fixture",
+      "source_recording": null,
+      "source_generator": "research/datasets/benchmark_fixtures.py",
+      "dataset_tag": "UI-PRMD-MOCK",
+      "exercise": "squat",
+      "protocol": "occluded_stress",
+      "declared_view": "lateral",
+      "frames": 180,
+      "reps": 2,
+      "input_file": "inputs\\Subject_10__trial_08_squat_occluded.npz",
+      "file_sha256": "0e40a8da906bdc25dd5f83af8fbe436b65fc71867fccabd3350214be41ad89a4",
+      "input_content_sha256": "cdd63ce37b985058518e0306e3eff71ef6af4f5c8b7e566c714bd8aed5a27327",
+      "legacy_metadata_hash": "fe72aaae02079bc6eee4507f35cdf5d08b114b40e164c01e7b05e0c29f8a1656"
+    }
+  ],
+  "duplicate_input_groups": [
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_01_optimal_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_01_optimal_lateral"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_02_valgus_frontal"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_02_valgus_frontal"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_03_shallow_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_03_shallow_lateral"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_04_pushup_lateral"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_04_pushup_lateral"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_05_pushup_hipsag"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_05_pushup_hipsag"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_06_curl_optimal"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_06_curl_optimal"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_07_squat_frontal_ambiguous"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_07_squat_frontal_ambiguous"
+      }
+    ],
+    [
+      {
+        "split": "train",
+        "subject": "Subject_01",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_02",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_03",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_04",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_05",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "train",
+        "subject": "Subject_06",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_07",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "val",
+        "subject": "Subject_08",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_09",
+        "session": "trial_08_squat_occluded"
+      },
+      {
+        "split": "test",
+        "subject": "Subject_10",
+        "session": "trial_08_squat_occluded"
+      }
+    ]
+  ],
+  "split_sizes": {
+    "train": 48,
+    "val": 16,
+    "test": 16
+  },
+  "unique_input_count": 8,
+  "metrics": {
+    "historical_label_supplied": {
+      "model_a_baseline": {
+        "labels_rows_true_columns_predicted": [
+          "alternate_bicep_curl",
+          "bicep_curl",
+          "pushup",
+          "squat",
+          "unknown"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            3,
+            2,
+            0,
+            0,
+            5
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "macro_f1_true_classes": 0.2222222222222222,
+        "balanced_accuracy_true_classes": 0.16666666666666666,
+        "rep_mae": 3.125,
+        "retained_n": 16,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.8748660588338675,
+        "all_trial_binary_brier": 0.8748660588338675,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 2.274249411764721,
+          "p95": 2.8533020370416664
+        },
+        "legacy_metrics": {
+          "macro_f1": 0.133,
+          "balanced_accuracy": 0.1,
+          "per_class": {
+            "alternate_bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.667
+            },
+            "squat": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "unknown": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "classes": [
+            "alternate_bicep_curl",
+            "bicep_curl",
+            "pushup",
+            "squat",
+            "unknown"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.8749,
+          "ece": 0.8749,
+          "abstention_rate": 0.0,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_b_view_gated": {
+        "labels_rows_true_columns_predicted": [
+          "bicep_curl",
+          "pushup",
+          "squat"
+        ],
+        "confusion_matrix": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            10
+          ]
+        ],
+        "macro_f1_true_classes": 1.0,
+        "balanced_accuracy_true_classes": 1.0,
+        "rep_mae": 3.125,
+        "retained_n": 14,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.9044489999999997,
+        "all_trial_binary_brier": 0.8114929999999999,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 2.155065940377961,
+          "p95": 2.4283357512979444
+        },
+        "legacy_metrics": {
+          "macro_f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "per_class": {
+            "bicep_curl": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "squat": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            }
+          },
+          "classes": [
+            "bicep_curl",
+            "pushup",
+            "squat"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.9044,
+          "ece": 0.951,
+          "abstention_rate": 0.125,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_c_temporal": {
+        "labels_rows_true_columns_predicted": [
+          "bicep_curl",
+          "pushup",
+          "squat"
+        ],
+        "confusion_matrix": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            10
+          ]
+        ],
+        "macro_f1_true_classes": 1.0,
+        "balanced_accuracy_true_classes": 1.0,
+        "rep_mae": 3.125,
+        "retained_n": 16,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.8748660588338675,
+        "all_trial_binary_brier": 0.8748660588338675,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 3.7397534693877637,
+          "p95": 4.091341062095742
+        },
+        "legacy_metrics": {
+          "macro_f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "per_class": {
+            "bicep_curl": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "squat": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            }
+          },
+          "classes": [
+            "bicep_curl",
+            "pushup",
+            "squat"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.8749,
+          "ece": 0.8749,
+          "abstention_rate": 0.0,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_d_calibrated": {
+        "labels_rows_true_columns_predicted": [
+          "bicep_curl",
+          "pushup",
+          "squat"
+        ],
+        "confusion_matrix": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            10
+          ]
+        ],
+        "macro_f1_true_classes": 1.0,
+        "balanced_accuracy_true_classes": 1.0,
+        "rep_mae": 3.125,
+        "retained_n": 14,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.9260234285714285,
+        "all_trial_binary_brier": 0.831591625,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 3.78075693899859,
+          "p95": 4.114291388893637
+        },
+        "legacy_metrics": {
+          "macro_f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "per_class": {
+            "bicep_curl": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "squat": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            }
+          },
+          "classes": [
+            "bicep_curl",
+            "pushup",
+            "squat"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.926,
+          "ece": 0.9623,
+          "abstention_rate": 0.125,
+          "retained_accuracy": 0.0
+        }
+      }
+    },
+    "blinded_exercise_none": {
+      "model_a_baseline": {
+        "labels_rows_true_columns_predicted": [
+          "alternate_bicep_curl",
+          "bicep_curl",
+          "pushup",
+          "squat",
+          "unknown"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            6
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "macro_f1_true_classes": 0.2222222222222222,
+        "balanced_accuracy_true_classes": 0.16666666666666666,
+        "rep_mae": 3.125,
+        "retained_n": 16,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.8748660588338675,
+        "all_trial_binary_brier": 0.8748660588338675,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 2.093214008713332,
+          "p95": 2.1376860544213905
+        },
+        "legacy_metrics": {
+          "macro_f1": 0.133,
+          "balanced_accuracy": 0.1,
+          "per_class": {
+            "alternate_bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.667
+            },
+            "squat": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "unknown": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "classes": [
+            "alternate_bicep_curl",
+            "bicep_curl",
+            "pushup",
+            "squat",
+            "unknown"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.8749,
+          "ece": 0.8749,
+          "abstention_rate": 0.0,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_b_view_gated": {
+        "labels_rows_true_columns_predicted": [
+          "alternate_bicep_curl",
+          "bicep_curl",
+          "pushup",
+          "squat",
+          "unknown"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            6
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "macro_f1_true_classes": 0.2222222222222222,
+        "balanced_accuracy_true_classes": 0.16666666666666666,
+        "rep_mae": 3.125,
+        "retained_n": 14,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.8968489999999998,
+        "all_trial_binary_brier": 0.8092739999999999,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 2.1183390196086953,
+          "p95": 2.184414746786717
+        },
+        "legacy_metrics": {
+          "macro_f1": 0.133,
+          "balanced_accuracy": 0.1,
+          "per_class": {
+            "alternate_bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.667
+            },
+            "squat": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "unknown": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "classes": [
+            "alternate_bicep_curl",
+            "bicep_curl",
+            "pushup",
+            "squat",
+            "unknown"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.8968,
+          "ece": 0.947,
+          "abstention_rate": 0.125,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_c_temporal": {
+        "labels_rows_true_columns_predicted": [
+          "alternate_bicep_curl",
+          "bicep_curl",
+          "pushup",
+          "squat",
+          "unknown"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            2,
+            0,
+            0,
+            4
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "macro_f1_true_classes": 0.3333333333333333,
+        "balanced_accuracy_true_classes": 0.3333333333333333,
+        "rep_mae": 3.125,
+        "retained_n": 16,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.8748660588338675,
+        "all_trial_binary_brier": 0.8748660588338675,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 3.7471870028015224,
+          "p95": 4.041928627447858
+        },
+        "legacy_metrics": {
+          "macro_f1": 0.2,
+          "balanced_accuracy": 0.2,
+          "per_class": {
+            "alternate_bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "squat": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "unknown": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "classes": [
+            "alternate_bicep_curl",
+            "bicep_curl",
+            "pushup",
+            "squat",
+            "unknown"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.8749,
+          "ece": 0.8749,
+          "abstention_rate": 0.0,
+          "retained_accuracy": 0.0
+        }
+      },
+      "model_d_calibrated": {
+        "labels_rows_true_columns_predicted": [
+          "alternate_bicep_curl",
+          "bicep_curl",
+          "pushup",
+          "squat",
+          "unknown"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            2,
+            0,
+            0,
+            4
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "macro_f1_true_classes": 0.3333333333333333,
+        "balanced_accuracy_true_classes": 0.3333333333333333,
+        "rep_mae": 3.125,
+        "retained_n": 16,
+        "retained_joint_accuracy": 0.0,
+        "accepted_binary_brier": 0.9235475,
+        "all_trial_binary_brier": 0.9235475,
+        "offline_sequence_mean_per_frame_ms": {
+          "p50": 3.6841529411792173,
+          "p95": 3.8966569444381904
+        },
+        "legacy_metrics": {
+          "macro_f1": 0.2,
+          "balanced_accuracy": 0.2,
+          "per_class": {
+            "alternate_bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "bicep_curl": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "pushup": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0
+            },
+            "squat": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "unknown": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "classes": [
+            "alternate_bicep_curl",
+            "bicep_curl",
+            "pushup",
+            "squat",
+            "unknown"
+          ]
+        },
+        "legacy_calibration": {
+          "brier_score": 0.9235,
+          "ece": 0.961,
+          "abstention_rate": 0.0,
+          "retained_accuracy": 0.0
+        }
+      }
+    }
+  },
+  "wrong_label_probes": [
+    {
+      "model": "model_a_baseline",
+      "true_exercise": "squat",
+      "supplied_exercise": "bicep_curl",
+      "exercise_prediction": null
+    },
+    {
+      "model": "model_b_view_gated",
+      "true_exercise": "squat",
+      "supplied_exercise": "bicep_curl",
+      "exercise_prediction": "bicep_curl"
+    },
+    {
+      "model": "model_c_temporal",
+      "true_exercise": "squat",
+      "supplied_exercise": "bicep_curl",
+      "exercise_prediction": "bicep_curl"
+    },
+    {
+      "model": "model_d_calibrated",
+      "true_exercise": "squat",
+      "supplied_exercise": "bicep_curl",
+      "exercise_prediction": "bicep_curl"
+    }
+  ],
+  "common_retained_n": 14,
+  "common_retained_brier": {
+    "model_a_baseline": 0.8569922459674351,
+    "model_b_view_gated": 0.9044489999999997,
+    "model_c_temporal": 0.8569922459674351,
+    "model_d_calibrated": 0.9260234285714285
+  },
+  "live_measurements": {
+    "browser_pose_ms": null,
+    "backend_live_ms": null,
+    "network_ms": null,
+    "sensor_to_display_ms": null,
+    "camera_trials": 0
+  },
+  "limitations": [
+    "Final sequence state only",
+    "Wall-clock replay; source timestamps not supplied to FormManager",
+    "No training or calibration fit",
+    "No human camera evidence in this artifact"
+  ]
+}

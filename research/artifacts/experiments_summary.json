@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-22T05:13:15Z",
+  "audit_status": "AUDITED_OCT_2026",
+  "audit_report": "docs/EVALUATION_AUDIT.md",
+  "evidence_type": "synthetic_stress_fixture_diagnostic",
+  "human_recordings_ingested": 0,
+  "label_leakage_disclosure": "Models B, C, D received exercise label hint in test harness; blind classification Macro-F1 is 0.133-0.200",
+  "brier_score_disclosure": "Higher Brier score in Model D is an artifact of rep counter returning 0 on synthetic fixtures",
+  "measured_end_to_end_latency_ms": 57.0,
+  "test_subjects": [
+    "Subject_09",
+    "Subject_10"
+  ],
+  "num_test_trials": 16,
+  "models": {
+    "model_a_baseline": {
+      "model_id": "model_a_baseline",
+      "description": "Baseline rule-based geometric constraints with 4-state HMM classification.",
+      "exercise_macro_f1": 0.167,
+      "balanced_accuracy": 0.125,
+      "rep_mae": 3.125,
+      "rep_rmse": 3.182,
+      "false_warning_rate": 0.0,
+      "brier_score": 0.8749,
+      "ece": 0.8749,
+      "abstention_rate": 0.0,
+      "retained_accuracy": 0.0,
+      "latency_p50_ms": 1.92,
+      "latency_p95_ms": 1.95,
+      "throughput_fps": 520.7
+    },
+    "model_b_view_gated": {
+      "model_id": "model_b_view_gated",
+      "description": "HMM baseline augmented with real-time 3D camera view classification and angle-gated rule suppression.",
+      "exercise_macro_f1": 1.0,
+      "balanced_accuracy": 1.0,
+      "rep_mae": 3.125,
+      "rep_rmse": 3.182,
+      "false_warning_rate": 0.0,
+      "brier_score": 0.9044,
+      "ece": 0.951,
+      "abstention_rate": 0.125,
+      "retained_accuracy": 0.0,
+      "latency_p50_ms": 1.99,
+      "latency_p95_ms": 2.07,
+      "throughput_fps": 503.6
+    },
+    "model_c_temporal": {
+      "model_id": "model_c_temporal",
+      "description": "Temporal trajectory assessment combining angular velocities, phase dynamics, and jerk smoothness.",
+      "exercise_macro_f1": 1.0,
+      "balanced_accuracy": 1.0,
+      "rep_mae": 3.125,
+      "rep_rmse": 3.182,
+      "false_warning_rate": 0.188,
+      "brier_score": 0.8749,
+      "ece": 0.8749,
+      "abstention_rate": 0.0,
+      "retained_accuracy": 0.0,
+      "latency_p50_ms": 3.48,
+      "latency_p95_ms": 3.66,
+      "throughput_fps": 287.6
+    },
+    "model_d_calibrated": {
+      "model_id": "model_d_calibrated",
+      "description": "MotionIQ proposed model: Temporal kinematic modeling, 3D view-awareness, calibrated confidence estimation, and explicit abstention under occlusion or uncertainty.",
+      "exercise_macro_f1": 1.0,
+      "balanced_accuracy": 1.0,
+      "rep_mae": 3.125,
+      "rep_rmse": 3.182,
+      "false_warning_rate": 0.188,
+      "brier_score": 0.926,
+      "ece": 0.9623,
+      "abstention_rate": 0.125,
+      "retained_accuracy": 0.0,
+      "latency_p50_ms": 3.53,
+      "latency_p95_ms": 3.63,
+      "throughput_fps": 283.1
+    }
+  },
+  "ablation_table": [
+    {
+      "model": "model_a_baseline",
+      "macro_f1": 0.167,
+      "rep_mae": 3.125,
+      "false_warning_rate": 0.0,
+      "brier_score": 0.8749,
+      "retained_accuracy": 0.0,
+      "abstention_rate": 0.0,
+      "latency_p50_ms": 1.92
+    },
+    {
+      "model": "model_b_view_gated",
+      "macro_f1": 1.0,
+      "rep_mae": 3.125,
+      "false_warning_rate": 0.0,
+      "brier_score": 0.9044,
+      "retained_accuracy": 0.0,
+      "abstention_rate": 0.125,
+      "latency_p50_ms": 1.99
+    },
+    {
+      "model": "model_c_temporal",
+      "macro_f1": 1.0,
+      "rep_mae": 3.125,
+      "false_warning_rate": 0.188,
+      "brier_score": 0.8749,
+      "retained_accuracy": 0.0,
+      "abstention_rate": 0.0,
+      "latency_p50_ms": 3.48
+    },
+    {
+      "model": "model_d_calibrated",
+      "macro_f1": 1.0,
+      "rep_mae": 3.125,
+      "false_warning_rate": 0.188,
+      "brier_score": 0.926,
+      "retained_accuracy": 0.0,
+      "abstention_rate": 0.125,
+      "latency_p50_ms": 3.53
+    }
+  ]
+}

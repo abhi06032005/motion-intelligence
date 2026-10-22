@@ -1,0 +1,516 @@
+{
+  "timestamp": "2026-10-22T09:46:28Z",
+  "dataset": "UI-PRMD Deep Squats (Authentic Vicon 100Hz, 200 Trials)",
+  "evaluation_protocol": "Leave-One-Subject-Out (LOSO) 10-Fold Cross-Validation",
+  "total_streams_evaluated": 600,
+  "subjects_evaluated": [
+    "Subject_01",
+    "Subject_02",
+    "Subject_03",
+    "Subject_04",
+    "Subject_05",
+    "Subject_06",
+    "Subject_07",
+    "Subject_08",
+    "Subject_09",
+    "Subject_10"
+  ],
+  "overall_summary": {
+    "baseline_majority": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 300,
+      "fn": 300,
+      "sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "precision_pct": 0.0,
+      "macro_f1": 0.333,
+      "balanced_accuracy_pct": 50.0,
+      "false_warning_rate_pct": 0.0,
+      "abstention_rate_pct": 0.0,
+      "coverage_pct": 100.0,
+      "selective_risk_pct": 50.0,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          50.0,
+          50.0
+        ],
+        "sensitivity_ci95": [
+          0.0,
+          0.0
+        ],
+        "specificity_ci95": [
+          100.0,
+          100.0
+        ],
+        "fwr_ci95": [
+          0.0,
+          0.0
+        ],
+        "macro_f1_ci95": [
+          0.333,
+          0.333
+        ]
+      }
+    },
+    "baseline_always_abstain": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 0,
+      "sensitivity_pct": 0.0,
+      "specificity_pct": 0.0,
+      "precision_pct": 0.0,
+      "macro_f1": 0.0,
+      "balanced_accuracy_pct": 0.0,
+      "false_warning_rate_pct": 0.0,
+      "abstention_rate_pct": 100.0,
+      "coverage_pct": 0.0,
+      "selective_risk_pct": 0.0,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          0.0,
+          0.0
+        ],
+        "sensitivity_ci95": [
+          0.0,
+          0.0
+        ],
+        "specificity_ci95": [
+          0.0,
+          0.0
+        ],
+        "fwr_ci95": [
+          0.0,
+          0.0
+        ],
+        "macro_f1_ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "model_a_rules": {
+      "tp": 267,
+      "fp": 148,
+      "tn": 152,
+      "fn": 33,
+      "sensitivity_pct": 89.0,
+      "specificity_pct": 50.7,
+      "precision_pct": 64.3,
+      "macro_f1": 0.687,
+      "balanced_accuracy_pct": 69.8,
+      "false_warning_rate_pct": 49.3,
+      "abstention_rate_pct": 0.0,
+      "coverage_pct": 100.0,
+      "selective_risk_pct": 30.2,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          61.8,
+          76.3
+        ],
+        "sensitivity_ci95": [
+          83.0,
+          94.3
+        ],
+        "specificity_ci95": [
+          36.0,
+          62.7
+        ],
+        "fwr_ci95": [
+          37.3,
+          64.0
+        ],
+        "macro_f1_ci95": [
+          0.592,
+          0.756
+        ]
+      }
+    },
+    "model_b_temporal": {
+      "tp": 300,
+      "fp": 300,
+      "tn": 0,
+      "fn": 0,
+      "sensitivity_pct": 100.0,
+      "specificity_pct": 0.0,
+      "precision_pct": 50.0,
+      "macro_f1": 0.333,
+      "balanced_accuracy_pct": 50.0,
+      "false_warning_rate_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "coverage_pct": 100.0,
+      "selective_risk_pct": 50.0,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          50.0,
+          50.0
+        ],
+        "sensitivity_ci95": [
+          100.0,
+          100.0
+        ],
+        "specificity_ci95": [
+          0.0,
+          0.0
+        ],
+        "fwr_ci95": [
+          100.0,
+          100.0
+        ],
+        "macro_f1_ci95": [
+          0.333,
+          0.333
+        ]
+      }
+    },
+    "model_c_supervised_temporal": {
+      "tp": 215,
+      "fp": 69,
+      "tn": 231,
+      "fn": 85,
+      "sensitivity_pct": 71.7,
+      "specificity_pct": 77.0,
+      "precision_pct": 75.7,
+      "macro_f1": 0.743,
+      "balanced_accuracy_pct": 74.3,
+      "false_warning_rate_pct": 23.0,
+      "abstention_rate_pct": 0.0,
+      "coverage_pct": 100.0,
+      "selective_risk_pct": 25.7,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.01,
+        "p95": 0.02
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          66.5,
+          82.7
+        ],
+        "sensitivity_ci95": [
+          54.3,
+          88.3
+        ],
+        "specificity_ci95": [
+          52.7,
+          99.0
+        ],
+        "fwr_ci95": [
+          1.0,
+          47.3
+        ],
+        "macro_f1_ci95": [
+          0.66,
+          0.824
+        ]
+      }
+    },
+    "model_d_view_aware_supervised": {
+      "tp": 231,
+      "fp": 61,
+      "tn": 239,
+      "fn": 69,
+      "sensitivity_pct": 77.0,
+      "specificity_pct": 79.7,
+      "precision_pct": 79.1,
+      "macro_f1": 0.783,
+      "balanced_accuracy_pct": 78.3,
+      "false_warning_rate_pct": 20.3,
+      "abstention_rate_pct": 0.0,
+      "coverage_pct": 100.0,
+      "selective_risk_pct": 21.7,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.01,
+        "p95": 0.02
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          70.7,
+          84.2
+        ],
+        "sensitivity_ci95": [
+          64.7,
+          89.7
+        ],
+        "specificity_ci95": [
+          58.7,
+          95.0
+        ],
+        "fwr_ci95": [
+          5.0,
+          41.3
+        ],
+        "macro_f1_ci95": [
+          0.702,
+          0.841
+        ]
+      }
+    },
+    "model_e_uncertainty_calibrated": {
+      "tp": 230,
+      "fp": 50,
+      "tn": 198,
+      "fn": 53,
+      "sensitivity_pct": 81.3,
+      "specificity_pct": 79.8,
+      "precision_pct": 82.1,
+      "macro_f1": 0.805,
+      "balanced_accuracy_pct": 80.6,
+      "false_warning_rate_pct": 20.2,
+      "abstention_rate_pct": 11.5,
+      "coverage_pct": 88.5,
+      "selective_risk_pct": 19.4,
+      "total_samples": 600,
+      "inference_latency_ms": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "confidence_intervals_95": {
+        "balanced_accuracy_ci95": [
+          71.8,
+          88.2
+        ],
+        "sensitivity_ci95": [
+          70.1,
+          91.7
+        ],
+        "specificity_ci95": [
+          56.2,
+          96.9
+        ],
+        "fwr_ci95": [
+          3.1,
+          43.8
+        ],
+        "macro_f1_ci95": [
+          0.718,
+          0.878
+        ]
+      }
+    }
+  },
+  "per_viewpoint_summary": {
+    "model_a_rules": {
+      "frontal": {
+        "tp": 92,
+        "fp": 45,
+        "tn": 55,
+        "fn": 8,
+        "sensitivity_pct": 92.0,
+        "specificity_pct": 55.0,
+        "precision_pct": 67.2,
+        "macro_f1": 0.726,
+        "balanced_accuracy_pct": 73.5,
+        "false_warning_rate_pct": 45.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 26.5,
+        "total_samples": 200
+      },
+      "oblique": {
+        "tp": 82,
+        "fp": 29,
+        "tn": 71,
+        "fn": 18,
+        "sensitivity_pct": 82.0,
+        "specificity_pct": 71.0,
+        "precision_pct": 73.9,
+        "macro_f1": 0.764,
+        "balanced_accuracy_pct": 76.5,
+        "false_warning_rate_pct": 29.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 23.5,
+        "total_samples": 200
+      },
+      "lateral": {
+        "tp": 93,
+        "fp": 74,
+        "tn": 26,
+        "fn": 7,
+        "sensitivity_pct": 93.0,
+        "specificity_pct": 26.0,
+        "precision_pct": 55.7,
+        "macro_f1": 0.544,
+        "balanced_accuracy_pct": 59.5,
+        "false_warning_rate_pct": 74.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 40.5,
+        "total_samples": 200
+      }
+    },
+    "model_c_supervised_temporal": {
+      "frontal": {
+        "tp": 81,
+        "fp": 14,
+        "tn": 86,
+        "fn": 19,
+        "sensitivity_pct": 81.0,
+        "specificity_pct": 86.0,
+        "precision_pct": 85.3,
+        "macro_f1": 0.835,
+        "balanced_accuracy_pct": 83.5,
+        "false_warning_rate_pct": 14.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 16.5,
+        "total_samples": 200
+      },
+      "oblique": {
+        "tp": 68,
+        "fp": 26,
+        "tn": 74,
+        "fn": 32,
+        "sensitivity_pct": 68.0,
+        "specificity_pct": 74.0,
+        "precision_pct": 72.3,
+        "macro_f1": 0.71,
+        "balanced_accuracy_pct": 71.0,
+        "false_warning_rate_pct": 26.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 29.0,
+        "total_samples": 200
+      },
+      "lateral": {
+        "tp": 66,
+        "fp": 29,
+        "tn": 71,
+        "fn": 34,
+        "sensitivity_pct": 66.0,
+        "specificity_pct": 71.0,
+        "precision_pct": 69.5,
+        "macro_f1": 0.685,
+        "balanced_accuracy_pct": 68.5,
+        "false_warning_rate_pct": 29.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 31.5,
+        "total_samples": 200
+      }
+    },
+    "model_d_view_aware_supervised": {
+      "frontal": {
+        "tp": 82,
+        "fp": 15,
+        "tn": 85,
+        "fn": 18,
+        "sensitivity_pct": 82.0,
+        "specificity_pct": 85.0,
+        "precision_pct": 84.5,
+        "macro_f1": 0.835,
+        "balanced_accuracy_pct": 83.5,
+        "false_warning_rate_pct": 15.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 16.5,
+        "total_samples": 200
+      },
+      "oblique": {
+        "tp": 84,
+        "fp": 21,
+        "tn": 79,
+        "fn": 16,
+        "sensitivity_pct": 84.0,
+        "specificity_pct": 79.0,
+        "precision_pct": 80.0,
+        "macro_f1": 0.815,
+        "balanced_accuracy_pct": 81.5,
+        "false_warning_rate_pct": 21.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 18.5,
+        "total_samples": 200
+      },
+      "lateral": {
+        "tp": 65,
+        "fp": 25,
+        "tn": 75,
+        "fn": 35,
+        "sensitivity_pct": 65.0,
+        "specificity_pct": 75.0,
+        "precision_pct": 72.2,
+        "macro_f1": 0.699,
+        "balanced_accuracy_pct": 70.0,
+        "false_warning_rate_pct": 25.0,
+        "abstention_rate_pct": 0.0,
+        "coverage_pct": 100.0,
+        "selective_risk_pct": 30.0,
+        "total_samples": 200
+      }
+    },
+    "model_e_uncertainty_calibrated": {
+      "frontal": {
+        "tp": 82,
+        "fp": 10,
+        "tn": 70,
+        "fn": 15,
+        "sensitivity_pct": 84.5,
+        "specificity_pct": 87.5,
+        "precision_pct": 89.1,
+        "macro_f1": 0.858,
+        "balanced_accuracy_pct": 86.0,
+        "false_warning_rate_pct": 12.5,
+        "abstention_rate_pct": 11.5,
+        "coverage_pct": 88.5,
+        "selective_risk_pct": 14.1,
+        "total_samples": 200
+      },
+      "oblique": {
+        "tp": 83,
+        "fp": 19,
+        "tn": 58,
+        "fn": 11,
+        "sensitivity_pct": 88.3,
+        "specificity_pct": 75.3,
+        "precision_pct": 81.4,
+        "macro_f1": 0.821,
+        "balanced_accuracy_pct": 81.8,
+        "false_warning_rate_pct": 24.7,
+        "abstention_rate_pct": 14.5,
+        "coverage_pct": 85.5,
+        "selective_risk_pct": 17.5,
+        "total_samples": 200
+      },
+      "lateral": {
+        "tp": 65,
+        "fp": 21,
+        "tn": 70,
+        "fn": 27,
+        "sensitivity_pct": 70.7,
+        "specificity_pct": 76.9,
+        "precision_pct": 75.6,
+        "macro_f1": 0.738,
+        "balanced_accuracy_pct": 73.8,
+        "false_warning_rate_pct": 23.1,
+        "abstention_rate_pct": 8.5,
+        "coverage_pct": 91.5,
+        "selective_risk_pct": 26.2,
+        "total_samples": 200
+      }
+    }
+  }
+}

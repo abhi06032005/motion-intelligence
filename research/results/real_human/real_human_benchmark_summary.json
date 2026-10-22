@@ -1,0 +1,431 @@
+{
+  "timestamp": "2026-10-22T08:19:47Z",
+  "dataset": "UI-PRMD Deep Squats (Vicon 100Hz)",
+  "total_recordings": 200,
+  "task_a_blind_recognition": {
+    "frontal": {
+      "accuracy": 0.0,
+      "correct_squats": 0,
+      "total_trials": 200,
+      "distribution": {
+        "unknown": 200
+      }
+    },
+    "oblique": {
+      "accuracy": 0.0,
+      "correct_squats": 0,
+      "total_trials": 200,
+      "distribution": {
+        "unknown": 200
+      }
+    },
+    "lateral": {
+      "accuracy": 0.0,
+      "correct_squats": 0,
+      "total_trials": 200,
+      "distribution": {
+        "unknown": 200
+      }
+    }
+  },
+  "task_b_overall_metrics": [
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "specificity_pct": 100.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 31.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "frontal",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "oblique",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 32.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "lateral",
+      "false_warning_rate_pct": 14.0,
+      "true_positive_sensitivity_pct": 31.0,
+      "specificity_pct": 86.0,
+      "coverage_pct": 100.0,
+      "abstention_rate_pct": 0.0,
+      "optimal_trials": 100,
+      "non_optimal_trials": 100
+    }
+  ],
+  "task_b_holdout_test_metrics": [
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "baseline_0_no_warning",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "baseline_1_orientation_gating",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_a_baseline",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_b_view_gated",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 0.0,
+      "true_positive_sensitivity_pct": 0.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_c_temporal",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "frontal",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "oblique",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    },
+    {
+      "model_id": "model_d_calibrated",
+      "viewpoint": "lateral",
+      "test_subjects": [
+        "Subject_09",
+        "Subject_10"
+      ],
+      "false_warning_rate_pct": 50.0,
+      "true_positive_sensitivity_pct": 25.0,
+      "trials_evaluated": 40
+    }
+  ]
+}
