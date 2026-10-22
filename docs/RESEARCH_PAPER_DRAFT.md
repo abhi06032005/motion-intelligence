@@ -160,15 +160,15 @@ Evaluated across all **600 projected streams** (200 trials $\times$ 3 viewpoints
 
 Accounting for the fact that 600 projections represent 200 original recordings from 10 participants, we conducted a rigorous paired statistical analysis:
 
-| Model Comparison | Mean $\Delta$ Balanced Accuracy | Paired 95% Confidence Interval | Paired $t$-test ($p$-value) | Wilcoxon Signed-Rank ($p$-value) | Improved / Regressed |
+| Model Comparison | Mean $\Delta$ Balanced Accuracy | Paired 95% Confidence Interval | Paired $t$-test ($p$-value) | Wilcoxon Signed-Rank ($p$-value) | Improved / Tied / Regressed |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Model A vs Model C** | $+4.50\%$ | $[-7.6\%, +16.6\%]$ | $p = 0.4209$ | $p = 0.5076$ | 6 / 4 |
-| **Model A vs Model D** | **$+8.48\%$** | $[-1.1\%, +18.0\%]$ | $p = 0.0758$ (trend) | $p = 0.0745$ (trend) | 8 / 2 |
-| **Model A vs Model E** | **$+9.66\%$** | $[-0.7\%, +20.0\%]$ | $p = 0.0635$ (trend) | $p = 0.0654$ (trend) | 8 / 2 |
-| **Model C vs Model D** | $+3.98\%$ | $[-1.7\%, +9.7\%]$ | $p = 0.1488$ | $p = 0.1420$ | 7 / 3 |
-| **Model D vs Model E** | $+1.18\%$ | $[-1.0\%, +3.4\%]$ | $p = 0.2495$ | $p = 0.3125$ | 7 / 3 |
+| **Model A vs Model C** | $+4.50\%$ | $[-7.6\%, +16.6\%]$ | $p = 0.4209$ | $p = 0.5076$ | 5 / 0 / 5 |
+| **Model A vs Model D** | **$+8.48\%$** | $[-1.1\%, +18.0\%]$ | $p = 0.0758$ (trend) | $p = 0.0742$ (trend) | 7 / 1 / 2 |
+| **Model A vs Model E** | **$+9.66\%$** | $[-0.7\%, +20.0\%]$ | $p = 0.0635$ (trend) | $p = 0.0840$ (trend) | 8 / 0 / 2 |
+| **Model C vs Model D** | $+3.98\%$ | $[-1.7\%, +9.7\%]$ | $p = 0.1488$ | $p = 0.1230$ | 8 / 0 / 2 |
+| **Model D vs Model E** | $+1.18\%$ | $[-1.0\%, +3.4\%]$ | $p = 0.2495$ | $p = 0.3125$ | 6 / 1 / 3 |
 
-*Scientific Interpretation*: Model D and Model E improved Balanced Accuracy on 8 out of 10 participants (mean gain $+8.48\%$ to $+9.66\%$). With $N=10$ independent subjects ($df=9$), the paired $p$-value ($p \approx 0.06\text{--}0.07$) demonstrates a strong positive trend on the margin of conventional $\alpha = 0.05$ significance, truthfully reflecting the statistical limits of a 10-person cohort without falsely exaggerating statistical power.
+*Scientific Interpretation*: Model D improved or maintained Balanced Accuracy on 8 out of 10 participants (7 improved, 1 tied, 2 regressed), while Model E strictly improved on 8 out of 10 participants (8 improved, 0 tied, 2 regressed). With $N=10$ independent human subjects ($df=9$), the paired $p$-values ($p = 0.0758$ and $p = 0.0635$) indicate a strong positive trend on the margin of conventional $\alpha = 0.05$ significance, truthfully reflecting sample size limits without overclaiming statistical proof.
 
 ### 3.4 Fair Matched-Coverage Comparison & Risk-Coverage Curves
 
@@ -227,6 +227,7 @@ Our findings provide strong empirical support for the research hypothesis:
 3. Selective uncertainty abstention isolates difficult boundary samples (on which forced classification accuracy drops to $75.4\%$), elevating retained Balanced Accuracy to **80.6%** and reducing selective risk to **19.4%** at matched coverage.
 4. Paired subject-level statistical tests demonstrate a positive performance trend (+9.66% Balanced Accuracy, $p = 0.0635$), with 8 out of 10 participants benefiting from view-aware modeling. While this approaches significance, we explicitly note that conventional statistical significance ($\alpha = 0.05$) is not crossed due to the sample size of $N=10$ independent human participants.
 5. In addition, aggregate movement-quality classification (predicting general physical therapy exercise deviation) must be distinguished from specific orthopedic defect diagnoses (e.g., knee valgus angle $> 12^\circ$ or hip asymmetry), which function as assistive visual coaching proxies rather than clinical diagnoses.
+6. **Domain Gap & Unverified Accuracy Transfer**: Crucially, the reported 80.6% balanced accuracy and selective risk profile were established using 200 authentic UI-PRMD recordings captured via 100 Hz laboratory Vicon infrared optical motion capture with sub-millimeter precision. In physical production, the system ingests 2D monocular RGB webcam frames at 30 FPS using MediaPipe BlazePose, which is subject to lens distortion, perspective foreshortening, clothing deformation, and depth estimation noise. While live physical latency (57.0 ms) and viewpoint classification (100% across 5 pilot sessions) have been verified, **the direct zero-shot transfer of the 80.6% classification accuracy from Vicon-derived projections to live monocular webcams remains unverified** and constitutes a key scientific limitation.
 
 ### 5.2 Research Roadmap for Erasmus Mundus Master's Theses
 The defensible foundation established by MotionIQ provides immediate avenues for European master's research (IPCVAI, IMLEX, and Erasmus Mundus consortia):

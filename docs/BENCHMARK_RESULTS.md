@@ -101,8 +101,8 @@ Balanced Accuracy across all 10 held-out human participants under strict Leave-O
 
 ### 6.1 Subject-Level Paired Significance Tests ($N=10, df=9$)
 Because the 600 evaluation streams represent 200 physical human trials from 10 participants across 3 virtual viewpoints ($0^\circ, 45^\circ, 90^\circ$), statistical tests are conducted at the subject level ($N=10$) rather than assuming 600 independent samples:
-- **Model A vs Model D (View-Aware)**: Mean $\Delta$ Balanced Accuracy = **$+8.48\%$** [95% CI: $-1.1\%$ to $+18.0\%$], paired $t$-test $p = 0.0758$, Wilcoxon $p = 0.0742$. Improved on 8/10 participants (tied on 1, regressed on 2).
-- **Model A vs Model E (Selective Gate)**: Mean $\Delta$ Balanced Accuracy = **$+9.66\%$** [95% CI: $-0.7\%$ to $+20.0\%$], paired $t$-test $p = 0.0635$, Wilcoxon $p = 0.0840$. Improved on 8/10 participants (regressed on 2).
+- **Model A vs Model D (View-Aware)**: Mean $\Delta$ Balanced Accuracy = **$+8.48\%$** [95% CI: $-1.1\%$ to $+18.0\%$], paired $t$-test $p = 0.0758$, Wilcoxon $p = 0.0742$. Exactly **7 improved, 1 tied, 2 regressed** across the 10 participants.
+- **Model A vs Model E (Selective Gate)**: Mean $\Delta$ Balanced Accuracy = **$+9.66\%$** [95% CI: $-0.7\%$ to $+20.0\%$], paired $t$-test $p = 0.0635$, Wilcoxon $p = 0.0840$. Exactly **8 improved, 0 tied, 2 regressed** across the 10 participants.
 - *Scientific Interpretation*: The p-values ($p \approx 0.06\text{--}0.08$) indicate a strong positive trend on the margin of conventional $\alpha = 0.05$ significance. With a small clinical cohort of 10 participants, this represents promising empirical support rather than definitive statistical proof.
 
 ### 6.2 Reconciliation of Model D and Model E (Matched Coverage)
@@ -113,3 +113,8 @@ Because the 600 evaluation streams represent 200 physical human trials from 10 p
 
 ### 6.3 Movement Quality Classification vs Defect Coaching Proxies
 UI-PRMD provides binary clinical protocol labels ("optimal" vs "non-optimal") across entire exercise bouts. MotionIQ explicitly distinguishes aggregate quality classification from specific biomechanical defect alerts (e.g. knee valgus angle $> 12^\circ$ or torso inclination), which serve as assistive motor-coaching proxies rather than clinical diagnoses.
+
+### 6.4 Domain Gap Disclosure: Virtual Vicon Projection vs. Live Webcam MediaPipe Inference
+- **Virtual Vicon Benchmark**: The reported 80.6% balanced accuracy and selective risk curves are derived from 200 authentic optical motion capture recordings (UI-PRMD) captured at 100 Hz with sub-millimeter multi-camera infrared marker tracking. Synthetic pinhole projection models ($0^\circ, 45^\circ, 90^\circ$) preserve clean coordinate geometry.
+- **Live Monocular Webcam MediaPipe Inference**: In production, the system ingests 2D RGB frames from a single webcam at 30 FPS, predicting 3D landmarks via a lightweight neural network (MediaPipe BlazePose). Monocular tracking introduces depth jitter, perspective distortion, motion blur, and limb self-occlusion.
+- **Unverified Accuracy Transfer**: While real-time latency (57.0 ms) and viewpoint classification (100%) were validated on physical volunteer webcams, **the direct transfer of the 80.6% movement-quality classification accuracy to live monocular webcams remains unverified** without in-the-wild video annotations. Live webcam outputs serve as assistive motor-learning feedback, not gold-standard clinical measures.

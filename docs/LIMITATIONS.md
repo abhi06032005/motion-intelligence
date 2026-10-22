@@ -34,6 +34,14 @@ MotionIQ is a computer vision research prototype and fitness movement visualizat
   - 8 Static Yoga Poses
 - Complex multi-planar compound movements (e.g., Olympic clean-and-jerk, kettlebell snatches) require higher frame-rate capture (>60 FPS) and validated 3D biomechanical datasets before they can be responsibly supported.
 
+### 2.4 Domain Gap: Virtual Vicon Projection vs. Live Monocular Webcam MediaPipe Inference
+- **Laboratory Optical Mocap vs. In-the-Wild RGB Estimation**:
+  The academic benchmark results (80.6% Balanced Accuracy, 19.4% selective risk) were obtained using 200 authentic UI-PRMD recordings captured by a 100 Hz Vicon optical system with retro-reflective markers ($< 1\,\text{mm}$ error) projected into virtual camera perspectives.
+- **Unverified Accuracy Transfer**:
+  In physical deployment, the client browser estimates 3D skeletal landmarks from a single 2D RGB webcam at 30 FPS using MediaPipe BlazePose. While latency (57.0 ms) and view-classification accuracy (100% on 5 pilot sessions) have been verified, **the zero-shot transfer of the 80.6% movement-quality classification accuracy from Vicon data to live monocular webcams has NOT been clinically validated across a large patient population**. Monocular RGB inference introduces depth jitter, perspective foreshortening, clothing deformation, and lighting variations that are absent in optical laboratory data.
+- **assistive Scope**:
+  Live webcam outputs serve as assistive visual motor-learning aids, not gold-standard clinical measures. Users and clinicians must interpret live webcam indicators with appropriate caution.
+
 ---
 
 ## 3. Future Research Directions

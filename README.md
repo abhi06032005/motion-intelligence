@@ -31,9 +31,10 @@ Evaluated on **200 authentic Vicon optical motion-capture recordings** from the 
 
 > **Important Statistical & Methodological Context**:
 > - The 600 streams represent 200 physical human-motion trials across 10 participants; virtual camera viewpoints are evaluated as repeated projections rather than 600 independent human subjects.
-> - Subject-level paired statistical tests ($N=10, df=9$) confirm a mean balanced accuracy gain of **$+8.48\%$** for Model D ($p = 0.0758$) and **$+9.66\%$** for Model E ($p = 0.0635$) over upstream rules. Because $p > 0.05$, this is reported accurately as a **strong positive trend** across 8 of 10 participants rather than proven statistical significance.
+> - Subject-level paired statistical tests ($N=10, df=9$) confirm a mean balanced accuracy gain of **$+8.48\%$** for Model D ($p = 0.0758$, exactly 7 improved, 1 tied, 2 regressed) and **$+9.66\%$** for Model E ($p = 0.0635$, exactly 8 improved, 0 tied, 2 regressed) over upstream rules. Because $p > 0.05$, this is reported accurately as a **strong positive trend** rather than proven statistical significance.
 > - At matched coverage ($\phi = 0.885$), the underlying view-aware model achieves the same $80.6\%$ balanced accuracy and $19.4\%$ selective risk, confirming that risk decreases monotonically with coverage.
 > - **Aggregate Quality vs Defect Detection**: UI-PRMD provides binary clinical protocol labels ("optimal" vs "non-optimal") across entire exercise bouts. MotionIQ distinguishes aggregate quality classification from specific biomechanical defect alerts (e.g. knee valgus angle $> 12^\circ$ or hip asymmetry), which serve as assistive motor-coaching proxies rather than clinical diagnoses.
+> - **Domain Gap Disclosure**: Benchmark metrics were evaluated on authentic 100 Hz laboratory optical mocap (Vicon) projected to virtual cameras. Zero-shot transfer of this exact 80.6% classification accuracy to live monocular webcams has not been clinically validated across a large patient population due to monocular depth jitter and real-world RGB noise. Live webcam outputs serve as motor-learning aids, not clinical measures.
 
 ### Overall Movement-Quality Performance (LOSO 10-Fold Cross-Validation)
 

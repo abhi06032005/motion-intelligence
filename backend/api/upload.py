@@ -320,7 +320,12 @@ async def cleanup_chunks(session_dir: Path):
 
 @router.get("/files")
 async def list_uploaded_files():
-    """List all uploaded video files."""
+    """List uploaded video files (disabled in production to preserve user privacy)."""
+    if not settings.DEBUG:
+        return {
+            "files": [],
+            "message": "Public directory enumeration is disabled to prevent unauthorized access to biometric video data."
+        }
     files = []
     for path in UPLOAD_DIR.iterdir():
         if path.is_file() and path.suffix.lower() in _ALLOWED_VIDEO_EXTENSIONS:

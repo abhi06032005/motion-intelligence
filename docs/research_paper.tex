@@ -150,8 +150,8 @@ Model E (Selective)  & Frontal ($0^\circ$) & \textbf{12.5} & \textbf{86.0} \\
 \subsection{Subject-Level Paired Significance Analysis ($N=10$)}
 Because 600 streams represent 200 trials from 10 participants, statistical significance must be evaluated at the subject level ($df=9$):
 \begin{itemize}
-    \item \textbf{Model A vs Model D}: Mean $\Delta$ Balanced Accuracy = \textbf{$+8.48\%$} [95\% CI: $-1.1\%$ to $+18.0\%$], paired $t$-test $p = 0.0758$, Wilcoxon $p = 0.0742$. Improved on 8/10 participants.
-    \item \textbf{Model A vs Model E}: Mean $\Delta$ Balanced Accuracy = \textbf{$+9.66\%$} [95\% CI: $-0.7\%$ to $+20.0\%$], paired $t$-test $p = 0.0635$, Wilcoxon $p = 0.0840$. Improved on 8/10 participants.
+    \item \textbf{Model A vs Model D}: Mean $\Delta$ Balanced Accuracy = \textbf{$+8.48\%$} [95\% CI: $-1.1\%$ to $+18.0\%$], paired $t$-test $p = 0.0758$, Wilcoxon $p = 0.0742$. Exactly 7 improved, 1 tied, 2 regressed across the 10 participants.
+    \item \textbf{Model A vs Model E}: Mean $\Delta$ Balanced Accuracy = \textbf{$+9.66\%$} [95\% CI: $-0.7\%$ to $+20.0\%$], paired $t$-test $p = 0.0635$, Wilcoxon $p = 0.0840$. Exactly 8 improved, 0 tied, 2 regressed across the 10 participants.
 \end{itemize}
 These p-values represent a strong positive trend on the margin of $\alpha=0.05$, honestly reflecting the sample size limits of a 10-person cohort without claiming unproven significance.
 
@@ -161,6 +161,9 @@ Sweeping coverage $\phi \in [0.50, 1.00]$ shows that selective error risk decrea
 \subsection{Latency Decomposition}
 Measured across 1,800 frames on an Intel Core i7-13700H and RTX 4060 GPU:
 camera buffer (16.7~ms) + browser MediaPipe WebGL (21.5~ms) + loopback WebSocket (1.2~ms) + FastAPI kinematics (28.4~ms) + Canvas render (4.8~ms) = \textbf{57.0~ms median round-trip feedback ($\approx 17.5$ FPS)}.
+
+\subsection{Domain Gap Disclosure}
+The academic benchmark results (80.6\% Balanced Accuracy, 19.4\% selective risk) were obtained using 200 authentic UI-PRMD recordings captured by a 100~Hz Vicon optical mocap system with sub-millimeter precision. In physical deployment, the client browser estimates 3D skeletal landmarks from a single 2D RGB webcam at 30~FPS using MediaPipe BlazePose. While latency (57.0~ms) and view-classification accuracy (100\% on 5 pilot sessions) have been verified, \textbf{the zero-shot transfer of the 80.6\% movement-quality classification accuracy from Vicon data to live monocular webcams has not been clinically validated across a large patient population}. Live webcam outputs serve as assistive visual motor-learning aids, not gold-standard clinical measures.
 
 \section{Discussion \& Conclusion}
 MotionIQ demonstrates that combining 3D torso-normal camera viewpoint awareness with selective uncertainty abstention substantially mitigates false technique alarms in monocular exercise assessment. The entire platform operates in real time at 57.0~ms latency on consumer edge hardware while strictly preserving user biometric privacy.

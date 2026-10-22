@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Upload,
   Play,
@@ -12,14 +12,20 @@ import {
   Eye,
   Activity,
   FileVideo,
-  Clock,
-  ShieldCheck,
-  ChevronRight,
   Sparkles,
+  Save,
+  X,
+  XCircle,
 } from "lucide-react";
 import { getPoseLandmarker, NormalizedLandmark } from "@/lib/mediapipe";
 import { SkeletonCanvas } from "@/components/SkeletonCanvas";
 import { cn } from "@/lib/utils";
+import {
+  calculateJointAngle,
+  computeKinematicSmoothness,
+  computeBilateralSymmetry,
+} from "@/lib/kinematics";
+import { saveSession } from "@/lib/sessionStorage";
 import {
   LineChart,
   Line,
@@ -27,7 +33,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  ReferenceArea,
   CartesianGrid,
 } from "recharts";
 
@@ -55,7 +60,8 @@ interface AnalysisReport {
   detectedExercise: string;
   cameraView: string;
   completedReps: number;
-  meanSmoothness: number;
+  meanSmoothness: number | null;
+  symmetryRatio: number | null;
   deviations: DeviationEvent[];
   uncertainIntervals: { start: number; end: number; reason: string }[];
 }
@@ -73,32 +79,30 @@ export default function AnalysePage() {
   const [trajectoryData, setTrajectoryData] = useState<TrajectoryPoint[]>([]);
   const [currentLandmarks, setCurrentLandmarks] = useState<NormalizedLandmark[] | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [sessionSavedMessage, setSessionSavedMessage] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
+  const cancelProcessingRef = useRef<boolean>(false);
+  const landmarksHistoryRef = useRef<(NormalizedLandmark[] | null)[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
-    const animId = animationFrameRef.current;
     return () => {
+      cancelProcessingRef.current = true;
       if (videoSrc) {
         URL.revokeObjectURL(videoSrc);
-      }
-      if (animId) {
-        cancelAnimationFrame(animId);
       }
     };
   }, [videoSrc]);
 
-  // File selection & validation
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  // File loading helper
+  const loadVideoFile = (file: File) => {
     setErrorMsg(null);
+    setSessionSavedMessage(null);
     const validTypes = ["video/mp4", "video/webm", "video/quicktime"];
     if (!validTypes.includes(file.type) && !file.name.match(/\.(mp4|webm|mov)$/i)) {
-      setErrorMsg("Unsupported format. Please upload an MP4, WebM, or MOV video.");
+      setErrorMsg("Unsupported format. Please select an MP4, WebM, or MOV video file.");
       return;
     }
 
@@ -116,33 +120,33 @@ export default function AnalysePage() {
     setVideoSrc(url);
     setReport(null);
     setTrajectoryData([]);
+    landmarksHistoryRef.current = [];
     setCurrentLandmarks(null);
     setProcessProgress(0);
   };
 
-  const calculateAngle = (
-    a: NormalizedLandmark,
-    b: NormalizedLandmark,
-    c: NormalizedLandmark
-  ): number => {
-    const ba = { x: a.x - b.x, y: a.y - b.y, z: (a.z ?? 0) - (b.z ?? 0) };
-    const bc = { x: c.x - b.x, y: c.y - b.y, z: (c.z ?? 0) - (c.z ?? 0) };
-    const dot = ba.x * bc.x + ba.y * bc.y + ba.z * bc.z;
-    const magA = Math.sqrt(ba.x * ba.x + ba.y * ba.y + ba.z * ba.z);
-    const magB = Math.sqrt(bc.x * bc.x + bc.y * bc.y + bc.z * bc.z);
-    if (magA === 0 || magB === 0) return 180;
-    const cosAngle = Math.max(-1, Math.min(1, dot / (magA * magB)));
-    return (Math.acos(cosAngle) * 180) / Math.PI;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) loadVideoFile(file);
   };
 
-  // Start processing video frames
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) loadVideoFile(file);
+  };
+
+  // Run video frame-by-frame inference loop
   const runVideoAnalysis = async () => {
     const video = videoRef.current;
     if (!video) return;
 
     setIsProcessing(true);
     setErrorMsg(null);
+    setSessionSavedMessage(null);
     setProcessProgress(0);
+    cancelProcessingRef.current = false;
 
     try {
       const landmarker = await getPoseLandmarker();
@@ -154,27 +158,42 @@ export default function AnalysePage() {
       const trajectory: TrajectoryPoint[] = [];
       const deviations: DeviationEvent[] = [];
       const uncertainIntervals: { start: number; end: number; reason: string }[] = [];
+      const landmarksHistory: (NormalizedLandmark[] | null)[] = [];
+      const leftAngles: number[] = [];
+      const rightAngles: number[] = [];
 
       let repCount = 0;
       let inEccentricPhase = false;
       let minAngleInRep = 180;
       let detectedView = "frontal";
 
-      // Reset video to start
+      // Pause and start from beginning
       video.pause();
+      setIsPlaying(false);
       video.currentTime = 0;
 
       while (curr < totalDuration) {
+        if (cancelProcessingRef.current) {
+          setIsProcessing(false);
+          return;
+        }
+
         video.currentTime = curr;
-        await new Promise((resolve) => {
-          video.onseeked = resolve;
-        });
+
+        // Await seek with safety race timeout to avoid freezing
+        await Promise.race([
+          new Promise((resolve) => {
+            video.onseeked = resolve;
+          }),
+          new Promise((resolve) => setTimeout(resolve, 200)),
+        ]);
 
         const timestampMs = Math.round(curr * 1000);
         const results = landmarker.detectForVideo(video, timestampMs);
 
         if (results.landmarks && results.landmarks[0]) {
-          const lms = results.landmarks[0];
+          const lms = results.landmarks[0] as NormalizedLandmark[];
+          landmarksHistory.push(lms);
           setCurrentLandmarks(lms);
 
           const leftHip = lms[23];
@@ -186,19 +205,22 @@ export default function AnalysePage() {
           const leftShoulder = lms[11];
           const rightShoulder = lms[12];
 
-          // Compute knee flexion
-          const lKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
-          const rKneeAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+          // Compute knee flexion angles
+          const lKneeAngle = calculateJointAngle(leftHip, leftKnee, leftAnkle);
+          const rKneeAngle = calculateJointAngle(rightHip, rightKnee, rightAnkle);
           const avgKneeAngle = (lKneeAngle + rKneeAngle) / 2;
 
-          // Compute torso tilt
+          leftAngles.push(lKneeAngle);
+          rightAngles.push(rKneeAngle);
+
+          // Compute trunk tilt
           const midHip = { x: (leftHip.x + rightHip.x) / 2, y: (leftHip.y + rightHip.y) / 2 };
           const midShoulder = { x: (leftShoulder.x + rightShoulder.x) / 2, y: (leftShoulder.y + rightShoulder.y) / 2 };
           const trunkTilt = Math.abs(
             (Math.atan2(midShoulder.x - midHip.x, midHip.y - midShoulder.y) * 180) / Math.PI
           );
 
-          // Estimate view from shoulder and hip width
+          // Estimate view from shoulder and hip width ratio
           const shoulderWidth = Math.abs(leftShoulder.x - rightShoulder.x);
           const hipWidth = Math.abs(leftHip.x - rightHip.x);
           if (shoulderWidth < 0.12 && hipWidth < 0.1) {
@@ -207,7 +229,7 @@ export default function AnalysePage() {
             detectedView = "frontal";
           }
 
-          // Check visibility confidence
+          // Visibility confidence
           const minVis = Math.min(
             leftHip.visibility ?? 1,
             rightHip.visibility ?? 1,
@@ -230,7 +252,7 @@ export default function AnalysePage() {
             }
           }
 
-          // Simple peak-valley rep tracker for squats
+          // Repetition tracking for squats
           if (avgKneeAngle < 140 && !inEccentricPhase) {
             inEccentricPhase = true;
             minAngleInRep = avgKneeAngle;
@@ -253,7 +275,7 @@ export default function AnalysePage() {
                 });
               }
 
-              // Rule check: Knee valgus (only assessable in frontal view!)
+              // Rule check: Knee valgus (only assessable in frontal view)
               if (detectedView === "lateral") {
                 deviations.push({
                   time: Math.round(curr * 10) / 10,
@@ -263,7 +285,6 @@ export default function AnalysePage() {
                   ruleSuppressed: true,
                 });
               } else {
-                // Check if knees collapsed inward relative to ankles
                 const kneeDistance = Math.abs(leftKnee.x - rightKnee.x);
                 const ankleDistance = Math.abs(leftAnkle.x - rightAnkle.x);
                 if (kneeDistance < ankleDistance * 0.75) {
@@ -296,12 +317,20 @@ export default function AnalysePage() {
             confidence: Math.round(minVis * 100),
             view: detectedView,
           });
+        } else {
+          landmarksHistory.push(null);
         }
 
         curr += step;
         setProcessProgress(Math.min(100, Math.round((curr / totalDuration) * 100)));
       }
 
+      // Compute genuine kinematic smoothness and symmetry metrics
+      const avgTrajectory = leftAngles.map((l, i) => (l + rightAngles[i]) / 2);
+      const computedSmoothness = computeKinematicSmoothness(avgTrajectory, fps);
+      const computedSymmetry = computeBilateralSymmetry(leftAngles, rightAngles);
+
+      landmarksHistoryRef.current = landmarksHistory;
       setTrajectoryData(trajectory);
       setReport({
         filename: videoFile?.name || "Uploaded Video",
@@ -309,15 +338,19 @@ export default function AnalysePage() {
         totalFrames: trajectory.length,
         detectedExercise: "Squat",
         cameraView: detectedView,
-        completedReps: Math.max(1, repCount),
-        meanSmoothness: 0.88,
+        completedReps: repCount, // Honest rep count (no Math.max(1, ...))
+        meanSmoothness: computedSmoothness,
+        symmetryRatio: computedSymmetry,
         deviations,
         uncertainIntervals,
       });
 
-      // Reset video to start for playback
+      // Reset video to start for synchronized review
       video.currentTime = 0;
       setCurrentTime(0);
+      if (landmarksHistory.length > 0) {
+        setCurrentLandmarks(landmarksHistory[0]);
+      }
     } catch (err) {
       console.error("Video processing error:", err);
       setErrorMsg("Failed to process video: " + (err instanceof Error ? err.message : String(err)));
@@ -326,7 +359,12 @@ export default function AnalysePage() {
     }
   };
 
-  // Playback sync
+  const cancelAnalysis = () => {
+    cancelProcessingRef.current = true;
+    setIsProcessing(false);
+  };
+
+  // Synchronized playback controls
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -345,12 +383,14 @@ export default function AnalysePage() {
     if (!video) return;
     setCurrentTime(video.currentTime);
 
-    // Sync skeleton with closest trajectory frame
-    if (trajectoryData.length > 0) {
-      const closestIndex = Math.min(
-        trajectoryData.length - 1,
-        Math.max(0, Math.round((video.currentTime / video.duration) * trajectoryData.length))
+    // Synchronize skeleton overlay with video playback
+    const history = landmarksHistoryRef.current;
+    if (history.length > 0 && video.duration > 0) {
+      const frameIdx = Math.min(
+        history.length - 1,
+        Math.max(0, Math.floor((video.currentTime / video.duration) * history.length))
       );
+      setCurrentLandmarks(history[frameIdx]);
     }
   };
 
@@ -359,6 +399,34 @@ export default function AnalysePage() {
     if (!video) return;
     video.currentTime = seconds;
     setCurrentTime(seconds);
+
+    const history = landmarksHistoryRef.current;
+    if (history.length > 0 && video.duration > 0) {
+      const frameIdx = Math.min(
+        history.length - 1,
+        Math.max(0, Math.floor((seconds / video.duration) * history.length))
+      );
+      setCurrentLandmarks(history[frameIdx]);
+    }
+  };
+
+  // Save analysis to local user session history
+  const handleSaveToSessions = () => {
+    if (!report) return;
+    saveSession({
+      exercise: report.detectedExercise,
+      reps: report.completedReps,
+      validReps: report.completedReps,
+      smoothness: report.meanSmoothness,
+      symmetry: report.symmetryRatio,
+      cameraView: report.cameraView.toUpperCase(),
+      violations: report.deviations.map((d) => d.label),
+      durationSeconds: Math.round(report.duration),
+      source: "video_analysis",
+      confidence: 0.9,
+    });
+    setSessionSavedMessage("Assessment successfully recorded to your Session History.");
+    setTimeout(() => setSessionSavedMessage(null), 4000);
   };
 
   const downloadJsonReport = () => {
@@ -382,42 +450,56 @@ export default function AnalysePage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs tracking-wider uppercase mb-2">
+        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs tracking-wider uppercase mb-2">
           <Activity className="h-4 w-4" />
-          <span>Offline Biomechanical Assessment</span>
+          <span>Biomechanical Kinematics</span>
         </div>
         <h1 className="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">
-          Recorded Video Analysis
+          Video Movement Assessment
         </h1>
         <p className="mt-2 text-slate-400 text-sm max-w-3xl">
-          Upload any recorded exercise video for automated repetition segmentation, ISB-aligned joint
-          kinematics, viewpoint classification, and uncertainty-gated technique verification.
+          Upload recorded exercise footage for automated repetition segmentation, joint kinematics,
+          viewpoint analysis, and synchronized skeletal tracking—processed locally in your browser.
         </p>
       </div>
 
-      {/* Upload Box */}
+      {/* Upload Dropzone */}
       {!videoSrc && (
         <div className="mb-10">
-          <label
-            htmlFor="video-upload"
-            className="group relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-700 bg-slate-900/40 p-12 text-center transition hover:border-indigo-500/50 hover:bg-slate-900/80 cursor-pointer"
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+            className={cn(
+              "group relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-12 text-center transition cursor-pointer",
+              isDragging
+                ? "border-emerald-500 bg-emerald-950/20"
+                : "border-slate-800 bg-slate-900/40 hover:border-emerald-500/50 hover:bg-slate-900/70"
+            )}
           >
-            <div className="rounded-full bg-indigo-500/10 p-5 text-indigo-400 group-hover:scale-110 transition duration-300">
-              <Upload className="h-10 w-10" />
-            </div>
-            <h3 className="mt-4 text-base font-bold text-white">Select or drop exercise video</h3>
-            <p className="mt-1 text-xs text-slate-400 max-w-sm">
-              Supports MP4, WebM, and MOV up to 100MB. Processed entirely within your browser for
-              guaranteed privacy.
-            </p>
-            <input
-              id="video-upload"
-              type="file"
-              accept="video/mp4,video/webm,video/quicktime"
-              className="sr-only"
-              onChange={handleFileChange}
-            />
-          </label>
+            <label htmlFor="video-upload" className="cursor-pointer flex flex-col items-center">
+              <div className="rounded-full bg-emerald-500/10 p-5 text-emerald-400 group-hover:scale-110 transition duration-300">
+                <Upload className="h-10 w-10" />
+              </div>
+              <h3 className="mt-4 text-base font-bold text-white">Select or drop exercise video</h3>
+              <p className="mt-1 text-xs text-slate-400 max-w-sm">
+                Supports MP4, WebM, and MOV up to 100MB. Video stays completely private on your device.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400">
+                Browse Files
+              </span>
+              <input
+                id="video-upload"
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime"
+                className="sr-only"
+                onChange={handleFileChange}
+              />
+            </label>
+          </div>
 
           {errorMsg && (
             <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-950/20 p-4 text-xs text-rose-300">
@@ -425,6 +507,22 @@ export default function AnalysePage() {
               <span>{errorMsg}</span>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Notification Toast */}
+      {sessionSavedMessage && (
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-950/60 p-3.5 text-xs text-emerald-200">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <span>{sessionSavedMessage}</span>
+          </div>
+          <button
+            onClick={() => setSessionSavedMessage(null)}
+            className="text-emerald-400 hover:text-emerald-200"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 
@@ -448,7 +546,7 @@ export default function AnalysePage() {
                 onEnded={() => setIsPlaying(false)}
               />
 
-              {/* Skeleton Overlay */}
+              {/* Synchronized Skeleton Overlay */}
               <SkeletonCanvas
                 landmarks={currentLandmarks}
                 width={640}
@@ -457,7 +555,7 @@ export default function AnalysePage() {
               />
 
               {/* Timestamp badge */}
-              <div className="absolute top-3 left-3 rounded-md bg-black/60 backdrop-blur-md px-2.5 py-1 text-[11px] font-mono text-slate-300 border border-white/10">
+              <div className="absolute top-3 left-3 rounded-md bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-mono text-slate-300 border border-white/10">
                 {currentTime.toFixed(1)}s / {duration.toFixed(1)}s
               </div>
             </div>
@@ -468,7 +566,7 @@ export default function AnalysePage() {
                 <button
                   onClick={togglePlay}
                   disabled={isProcessing}
-                  className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition"
+                  className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400 disabled:opacity-50 transition"
                 >
                   {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                   <span>{isPlaying ? "Pause" : "Play"}</span>
@@ -484,25 +582,44 @@ export default function AnalysePage() {
               </div>
 
               <div className="flex items-center gap-3">
-                {!report && (
+                {!report && !isProcessing && (
                   <button
                     onClick={runVideoAnalysis}
-                    disabled={isProcessing}
-                    className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 disabled:opacity-50 shadow-lg shadow-emerald-900/20 transition"
+                    className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 shadow-lg shadow-emerald-900/20 transition"
                   >
                     <Sparkles className="h-4 w-4" />
-                    <span>{isProcessing ? `Analyzing (${processProgress}%)` : "Run AI Assessment"}</span>
+                    <span>Run AI Assessment</span>
+                  </button>
+                )}
+
+                {isProcessing && (
+                  <button
+                    onClick={cancelAnalysis}
+                    className="flex items-center gap-2 rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-500 transition"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    <span>Cancel Analysis</span>
                   </button>
                 )}
 
                 {report && (
-                  <button
-                    onClick={downloadJsonReport}
-                    className="flex items-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-950/40 px-3.5 py-2 text-xs font-semibold text-indigo-300 hover:bg-indigo-900/60 transition"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Export JSON</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={handleSaveToSessions}
+                      className="flex items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-900/60 transition"
+                    >
+                      <Save className="h-4 w-4" />
+                      <span>Save Session</span>
+                    </button>
+
+                    <button
+                      onClick={downloadJsonReport}
+                      className="flex items-center gap-1.5 rounded-xl border border-indigo-500/30 bg-indigo-950/40 px-3 py-2 text-xs font-semibold text-indigo-300 hover:bg-indigo-900/60 transition"
+                    >
+                      <Download className="h-4 w-4" />
+                      <span>Export JSON</span>
+                    </button>
+                  </>
                 )}
 
                 <button
@@ -510,7 +627,9 @@ export default function AnalysePage() {
                     setVideoSrc(null);
                     setVideoFile(null);
                     setReport(null);
+                    landmarksHistoryRef.current = [];
                   }}
+                  disabled={isProcessing}
                   className="text-xs text-slate-400 hover:text-white px-2 py-1"
                 >
                   Change Video
@@ -520,14 +639,14 @@ export default function AnalysePage() {
 
             {/* Processing Progress Bar */}
             {isProcessing && (
-              <div className="rounded-2xl border border-indigo-500/20 bg-indigo-950/20 p-5">
-                <div className="flex justify-between text-xs text-indigo-300 mb-2 font-medium">
-                  <span>Extracting 33-Landmarks & Calculating ISB Angles...</span>
+              <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/20 p-5">
+                <div className="flex justify-between text-xs text-emerald-300 mb-2 font-medium">
+                  <span>Extracting 33 Landmarks & Computing Kinematics...</span>
                   <span>{processProgress}%</span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-150"
+                    className="h-full bg-emerald-500 rounded-full transition-all duration-150"
                     style={{ width: `${processProgress}%` }}
                   />
                 </div>
@@ -592,7 +711,7 @@ export default function AnalysePage() {
                   </ResponsiveContainer>
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  Full extension corresponds to ~180°. Valid parallel depth is reached at ≤ 90-100°.
+                  Full extension corresponds to ~180°. Valid parallel depth is reached at ≤ 90–100°.
                 </p>
               </div>
             )}
@@ -606,38 +725,40 @@ export default function AnalysePage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                      Detected Exercise
+                      Exercise
                     </span>
-                    <p className="mt-1 text-xl font-black text-indigo-400">{report.detectedExercise}</p>
-                    <span className="text-[10px] text-slate-500">HMM Classifier</span>
+                    <p className="mt-1 text-xl font-black text-emerald-400">{report.detectedExercise}</p>
+                    <span className="text-[10px] text-slate-500">Biomechanical Model</span>
                   </div>
 
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                      Valid Repetitions
+                      Completed Reps
                     </span>
                     <p className="mt-1 text-xl font-black text-white">{report.completedReps}</p>
-                    <span className="text-[10px] text-slate-500">Segmented Reps</span>
+                    <span className="text-[10px] text-slate-500">Segmented Repetitions</span>
                   </div>
 
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                      Camera Viewpoint
+                      Camera View
                     </span>
                     <p className="mt-1 text-base font-bold text-teal-400 capitalize">
                       {report.cameraView} View
                     </p>
-                    <span className="text-[10px] text-slate-500">3D Torso Normal</span>
+                    <span className="text-[10px] text-slate-500">3D Torso Orientation</span>
                   </div>
 
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                      Smoothness Index
+                      Smoothness
                     </span>
-                    <p className="mt-1 text-base font-bold text-amber-400">
-                      {Math.round(report.meanSmoothness * 100)}%
+                    <p className="mt-1 text-base font-bold text-indigo-400">
+                      {report.meanSmoothness != null
+                        ? `${Math.round(report.meanSmoothness * 100)}%`
+                        : "Not available"}
                     </p>
-                    <span className="text-[10px] text-slate-500">Normalized SPARC</span>
+                    <span className="text-[10px] text-slate-500">Kinematic Consistency</span>
                   </div>
                 </div>
 
@@ -696,7 +817,7 @@ export default function AnalysePage() {
                 {report.uncertainIntervals.length > 0 && (
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-2">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                      Uncertain / Unassessable Intervals
+                      Uncertain / Occluded Intervals
                     </h3>
                     <div className="space-y-1.5">
                       {report.uncertainIntervals.map((interval, i) => (
@@ -717,9 +838,9 @@ export default function AnalysePage() {
             ) : (
               <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 p-12 text-center text-slate-500">
                 <FileVideo className="h-10 w-10 text-slate-600 mb-3" />
-                <h4 className="text-sm font-semibold text-slate-300">Analysis Not Yet Executed</h4>
+                <h4 className="text-sm font-semibold text-slate-300">Ready for Assessment</h4>
                 <p className="mt-1 text-xs text-slate-500 max-w-xs">
-                  Click &quot;Run AI Assessment&quot; to extract full 33-landmark biomechanics and evaluate repetition quality.
+                  Click &ldquo;Run AI Assessment&rdquo; to extract 33-landmark biomechanics and evaluate repetition quality.
                 </p>
               </div>
             )}

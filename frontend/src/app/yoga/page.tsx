@@ -10,14 +10,17 @@ import {
   AlertTriangle,
   RotateCcw,
   ShieldAlert,
+  Save,
+  Check,
 } from "lucide-react";
 import { getPoseLandmarker, NormalizedLandmark } from "@/lib/mediapipe";
 import { SkeletonCanvas } from "@/components/SkeletonCanvas";
 import { cn } from "@/lib/utils";
 import { getWebSocketUrl } from "@/lib/config";
+import { saveSession } from "@/lib/sessionStorage";
 
 const YOGA_POSES = [
-  { id: "mountain", name: "Mountain Pose (Tadasana)", guide: "Stand upright, feet hip-width, arms extended downwards." },
+  { id: "mountain", name: "Mountain Pose (Tadasana)", guide: "Stand upright, feet hip-width, arms extended downwards alongside body." },
   { id: "tree", name: "Tree Pose (Vrksasana)", guide: "Balance on one leg, place opposite foot against inner thigh or calf." },
   { id: "warrior_i", name: "Warrior I (Virabhadrasana I)", guide: "Front knee bent at 90°, back leg straight, arms reached overhead." },
   { id: "warrior_ii", name: "Warrior II (Virabhadrasana II)", guide: "Arms parallel to ground, front knee tracking over ankle, gaze forward." },
@@ -34,13 +37,56 @@ export default function YogaPage() {
   const [inPose, setInPose] = useState(false);
   const [violations, setViolations] = useState<string[]>([]);
   const [currentLandmarks, setCurrentLandmarks] = useState<NormalizedLandmark[] | null>(null);
+  const [wsConnected, setWsConnected] = useState(false);
+  const [savedNotification, setSavedNotification] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const clientIdRef = useRef<string>(`yoga_${Math.random().toString(36).substring(2, 9)}`);
+  const maxHoldRef = useRef<number>(0);
 
   const activePoseObj = YOGA_POSES.find((p) => p.id === selectedPose) || YOGA_POSES[0];
+
+  const initWebSocket = useCallback(() => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
+
+    const wsUrl = getWebSocketUrl("ws/yoga", clientIdRef.current);
+    try {
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        setWsConnected(true);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.hold_duration !== undefined) {
+            const secs = Math.round(data.hold_duration);
+            setHoldSeconds(secs);
+            if (secs > maxHoldRef.current) {
+              maxHoldRef.current = secs;
+            }
+            setInPose(data.is_in_pose ?? false);
+            setViolations(data.deviations || []);
+          }
+        } catch (err) {}
+      };
+
+      ws.onerror = () => {
+        setWsConnected(false);
+      };
+
+      ws.onclose = () => {
+        setWsConnected(false);
+      };
+
+      wsRef.current = ws;
+    } catch {
+      setWsConnected(false);
+    }
+  }, []);
 
   const startCamera = async () => {
     try {
@@ -54,18 +100,20 @@ export default function YogaPage() {
         videoRef.current.onloadedmetadata = () => {
           videoRef.current?.play();
           setIsCameraActive(true);
+          maxHoldRef.current = 0;
           initWebSocket();
           startLoop();
         };
       }
     } catch (err) {
-      alert("Please enable camera access to start guided yoga assessment.");
+      alert("Please enable camera access in your browser to start guided yoga assessment.");
     }
   };
 
   const stopCamera = useCallback(() => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
@@ -76,27 +124,29 @@ export default function YogaPage() {
       wsRef.current.close();
       wsRef.current = null;
     }
+
+    // If held pose for at least 5 seconds, record session
+    if (maxHoldRef.current >= 5) {
+      const poseName = activePoseObj.name.split(" (")[0];
+      saveSession({
+        exercise: `Yoga: ${poseName}`,
+        reps: 1,
+        validReps: 1,
+        smoothness: null,
+        symmetry: null,
+        cameraView: "Frontal",
+        violations: violations,
+        durationSeconds: maxHoldRef.current,
+        source: "live",
+      });
+      setSavedNotification(`Yoga session saved: held ${poseName} for ${maxHoldRef.current}s.`);
+      setTimeout(() => setSavedNotification(null), 4000);
+    }
+
     setIsCameraActive(false);
+    setWsConnected(false);
     setCurrentLandmarks(null);
-  }, []);
-
-  const initWebSocket = () => {
-    const wsUrl = getWebSocketUrl("ws/yoga", clientIdRef.current);
-    const ws = new WebSocket(wsUrl);
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.hold_duration !== undefined) {
-          setHoldSeconds(Math.round(data.hold_duration));
-          setInPose(data.is_in_pose ?? false);
-          setViolations(data.deviations || []);
-        }
-      } catch (err) {}
-    };
-
-    wsRef.current = ws;
-  };
+  }, [activePoseObj.name, violations]);
 
   const startLoop = async () => {
     const landmarker = await getPoseLandmarker();
@@ -139,6 +189,13 @@ export default function YogaPage() {
     return () => stopCamera();
   }, [stopCamera]);
 
+  const handleSelectPose = (poseId: string) => {
+    setSelectedPose(poseId);
+    setHoldSeconds(0);
+    setInPose(false);
+    setViolations([]);
+  };
+
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 pb-6 border-b border-slate-800">
@@ -148,7 +205,7 @@ export default function YogaPage() {
             Guided Yoga Posture Assessment
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Real-time static held-pose tracking across 8 standardized asanas with monotonic hold timer.
+            Real-time held-pose tracking across 8 standardized asanas with monotonic hold duration verification.
           </p>
         </div>
 
@@ -156,20 +213,29 @@ export default function YogaPage() {
           {!isCameraActive ? (
             <button
               onClick={startCamera}
-              className="flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400 transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400 transition-colors shadow-sm"
             >
               <Camera className="h-4 w-4" /> Start Yoga
             </button>
           ) : (
             <button
               onClick={stopCamera}
-              className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-rose-500"
+              className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-rose-500 transition-colors"
             >
               <CameraOff className="h-4 w-4" /> Stop
             </button>
           )}
         </div>
       </div>
+
+      {savedNotification && (
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-950/60 p-3.5 text-xs text-emerald-200">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <span>{savedNotification}</span>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Video & Canvas (8 cols) */}
@@ -196,7 +262,7 @@ export default function YogaPage() {
                 <Sparkles className="h-10 w-10 text-indigo-400/60 mb-4" />
                 <h3 className="text-base font-semibold text-white">Select a Pose and Launch Camera</h3>
                 <p className="mt-2 max-w-sm text-xs text-slate-400">
-                  Select your desired pose from the right panel. The timer starts automatically once posture criteria are met.
+                  Select your desired posture from the right panel. The timer activates automatically once your joint alignment satisfies posture criteria.
                 </p>
                 <button
                   onClick={startCamera}
@@ -248,7 +314,7 @@ export default function YogaPage() {
               {YOGA_POSES.map((pose) => (
                 <button
                   key={pose.id}
-                  onClick={() => setSelectedPose(pose.id)}
+                  onClick={() => handleSelectPose(pose.id)}
                   className={cn(
                     "flex items-center justify-between rounded-lg p-2.5 text-xs text-left transition-colors border",
                     selectedPose === pose.id
@@ -266,7 +332,7 @@ export default function YogaPage() {
           {/* Observed Deviations */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 flex-1">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
-              Observed Pose Deviations
+              Observed Pose Feedback
             </h3>
             {violations.length > 0 ? (
               <ul className="space-y-2">
@@ -282,16 +348,18 @@ export default function YogaPage() {
               </ul>
             ) : (
               <p className="text-xs text-slate-500 text-center py-6">
-                No major joint deviations detected. Maintain steady breathing.
+                {inPose
+                  ? "Postural alignment satisfied. Maintain steady posture and breathing."
+                  : "Step into view to align your posture with the guideline."}
               </p>
             )}
           </div>
 
-          {/* Safety Alert */}
+          {/* Safety Notice */}
           <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5 flex items-start gap-2.5 text-xs text-slate-400">
             <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
             <p className="text-[11px] leading-relaxed">
-              Maintaining an approximate pose on camera does not equate to clinical anatomical alignment. Avoid forcing ranges of motion that cause discomfort.
+              Camera pose estimation provides qualitative geometry feedback. Avoid forcing ranges of motion that cause discomfort or pain.
             </p>
           </div>
         </div>
