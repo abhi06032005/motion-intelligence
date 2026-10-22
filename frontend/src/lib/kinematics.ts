@@ -1,59 +1,120 @@
 /**
  * MotionIQ Biomechanical Kinematics & Smoothness Calculator
  *
- * Computes genuine joint angles, angular velocities, kinematic smoothness,
- * and bilateral symmetry without fabricating metrics.
+ * Computes 3D joint angles, angular velocities, kinematic smoothness proxy,
+ * and bilateral symmetry from MediaPipe NormalizedLandmark coordinates.
+ *
+ * All functions return null for invalid, degenerate, stationary or insufficient data
+ * to guarantee scientific integrity and prevent fabricated measurements.
  */
 
 import { NormalizedLandmark } from "./mediapipe";
 
 /**
  * Calculates the interior angle (in degrees) at joint vertex B formed by segments BA and BC.
+ * Uses 3D Euclidean coordinates (x, y, z) consistent with MediaPipe pose coordinate space.
+ *
+ * Returns null if:
+ * - Any landmark is missing, null, undefined, or contains non-finite/NaN coordinates
+ * - Either segment has zero or degenerate length (< 1e-6)
  */
 export function calculateJointAngle(
-  a: NormalizedLandmark,
-  b: NormalizedLandmark,
-  c: NormalizedLandmark
-): number {
-  const ba = { x: a.x - b.x, y: a.y - b.y, z: (a.z ?? 0) - (b.z ?? 0) };
-  const bc = { x: c.x - b.x, y: c.y - b.y, z: (c.z ?? 0) - (c.z ?? 0) };
+  a: NormalizedLandmark | null | undefined,
+  b: NormalizedLandmark | null | undefined,
+  c: NormalizedLandmark | null | undefined
+): number | null {
+  if (!a || !b || !c) return null;
+
+  const ax = a.x;
+  const ay = a.y;
+  const az = a.z ?? 0;
+
+  const bx = b.x;
+  const by = b.y;
+  const bz = b.z ?? 0;
+
+  const cx = c.x;
+  const cy = c.y;
+  const cz = c.z ?? 0;
+
+  if (
+    !Number.isFinite(ax) || !Number.isFinite(ay) || !Number.isFinite(az) ||
+    !Number.isFinite(bx) || !Number.isFinite(by) || !Number.isFinite(bz) ||
+    !Number.isFinite(cx) || !Number.isFinite(cy) || !Number.isFinite(cz)
+  ) {
+    return null;
+  }
+
+  // Vector BA = A - B
+  const ba = {
+    x: ax - bx,
+    y: ay - by,
+    z: az - bz,
+  };
+
+  // Vector BC = C - B (correctly subtracts vertex B from endpoint C in all 3 dimensions)
+  const bc = {
+    x: cx - bx,
+    y: cy - by,
+    z: cz - bz,
+  };
+
+  const magASq = ba.x * ba.x + ba.y * ba.y + ba.z * ba.z;
+  const magBSq = bc.x * bc.x + bc.y * bc.y + bc.z * bc.z;
+
+  // Degenerate zero-length vector check
+  if (magASq < 1e-12 || magBSq < 1e-12) {
+    return null;
+  }
+
+  const magA = Math.sqrt(magASq);
+  const magB = Math.sqrt(magBSq);
 
   const dot = ba.x * bc.x + ba.y * bc.y + ba.z * bc.z;
-  const magA = Math.sqrt(ba.x * ba.x + ba.y * ba.y + ba.z * ba.z);
-  const magB = Math.sqrt(bc.x * bc.x + bc.y * bc.y + bc.z * bc.z);
+  const cosAngle = Math.max(-1.0, Math.min(1.0, dot / (magA * magB)));
+  const angleRad = Math.acos(cosAngle);
+  const angleDeg = (angleRad * 180) / Math.PI;
 
-  if (magA === 0 || magB === 0) return 180;
-  const cosAngle = Math.max(-1, Math.min(1, dot / (magA * magB)));
-  return (Math.acos(cosAngle) * 180) / Math.PI;
+  return Math.round(angleDeg * 10) / 10;
 }
 
 /**
- * Computes the kinematic smoothness score for a joint angular trajectory.
- * Based on dimensionless jerk and angular velocity profile consistency.
+ * Computes a normalized kinematic smoothness proxy score based on third-derivative
+ * angular jerk and velocity profile consistency.
  *
- * Returns null if the trajectory is too short (< 15 frames) or if the movement
- * amplitude is negligible (stationary / no rep performed), so the UI can honestly
- * display "Not available".
+ * NOTE: This is a discrete kinematic jerk proxy for qualitative movement tracking.
+ * It is NOT clinical Spectral Arc Length (SPARC) and must not be described as such.
+ *
+ * Returns null if:
+ * - Trajectory has fewer than 15 valid frames
+ * - Excursion range is < 15 degrees (stationary, no significant movement performed)
+ * - Trajectory contains non-finite values
  */
 export function computeKinematicSmoothness(
-  angleTrajectory: number[],
+  angleTrajectory: number[] | null | undefined,
   fps = 30
 ): number | null {
   if (!angleTrajectory || angleTrajectory.length < 15) {
     return null;
   }
 
-  // Check movement range
+  // Ensure all values are finite
+  for (let i = 0; i < angleTrajectory.length; i++) {
+    if (!Number.isFinite(angleTrajectory[i])) {
+      return null;
+    }
+  }
+
   const minAngle = Math.min(...angleTrajectory);
   const maxAngle = Math.max(...angleTrajectory);
-  const range = maxAngle - minAngle;
+  const excursion = maxAngle - minAngle;
 
-  // If movement range is minimal (< 12 degrees), no significant movement occurred
-  if (range < 12) {
+  // Stationary trajectory threshold: minimum 15 degrees excursion required to evaluate movement
+  if (excursion < 15.0) {
     return null;
   }
 
-  const dt = 1 / fps;
+  const dt = 1 / Math.max(1, fps);
   const velocities: number[] = [];
   for (let i = 1; i < angleTrajectory.length; i++) {
     velocities.push((angleTrajectory[i] - angleTrajectory[i - 1]) / dt);
@@ -64,35 +125,42 @@ export function computeKinematicSmoothness(
     accelerations.push((velocities[i] - velocities[i - 1]) / dt);
   }
 
-  if (accelerations.length === 0) return null;
+  const jerks: number[] = [];
+  for (let i = 1; i < accelerations.length; i++) {
+    jerks.push((accelerations[i] - accelerations[i - 1]) / dt);
+  }
 
-  // Mean absolute velocity and acceleration variance
-  const meanAbsVelocity =
-    velocities.reduce((sum, v) => sum + Math.abs(v), 0) / velocities.length;
+  if (jerks.length === 0) return null;
 
-  const meanAcc =
-    accelerations.reduce((sum, a) => sum + a, 0) / accelerations.length;
-  const varianceAcc =
-    accelerations.reduce((sum, a) => sum + Math.pow(a - meanAcc, 2), 0) /
-    accelerations.length;
-  const stdAcc = Math.sqrt(varianceAcc);
+  const totalTime = angleTrajectory.length * dt;
+  if (totalTime <= 0) return null;
 
-  if (meanAbsVelocity <= 1e-3) return null;
+  // Integrated squared jerk
+  const integratedSquaredJerk = jerks.reduce((sum, j) => sum + j * j * dt, 0);
 
-  // Dimensionless jerk-based normalized smoothness: high jerk relative to speed -> low score
-  const jerkRatio = stdAcc / (meanAbsVelocity * 10 + 1);
-  const score = Math.max(0.1, Math.min(0.99, Math.exp(-0.04 * jerkRatio)));
+  // Dimensionless jerk normalized by duration and total angular excursion
+  // NJ = sqrt(0.5 * int(j^2) * T^5 / D^2)
+  const normalizedJerk = Math.sqrt(
+    0.5 * integratedSquaredJerk * Math.pow(totalTime, 5) / (excursion * excursion)
+  );
+
+  if (!Number.isFinite(normalizedJerk)) return null;
+
+  // Continuous monotonic mapping to [0.10, 0.98]
+  // Harmonic sinusoidal movements yield NJ ≈ 10–60 (score ≈ 0.75–0.96)
+  // Tremulous or jerky movements yield NJ > 250 (score < 0.40)
+  const score = Math.max(0.1, Math.min(0.98, Math.exp(-normalizedJerk / 250)));
 
   return Math.round(score * 100) / 100;
 }
 
 /**
  * Computes bilateral symmetry ratio between left and right limb angles.
- * Returns a score between 0.0 and 1.0, or null if insufficient valid data.
+ * Returns a score between 0.0 and 1.0, or null if insufficient valid data or movement.
  */
 export function computeBilateralSymmetry(
-  leftAngles: number[],
-  rightAngles: number[]
+  leftAngles: number[] | null | undefined,
+  rightAngles: number[] | null | undefined
 ): number | null {
   if (
     !leftAngles ||
@@ -104,12 +172,28 @@ export function computeBilateralSymmetry(
   }
 
   let totalDiff = 0;
+  let leftValid = 0;
+
   for (let i = 0; i < leftAngles.length; i++) {
-    totalDiff += Math.abs(leftAngles[i] - rightAngles[i]);
+    const l = leftAngles[i];
+    const r = rightAngles[i];
+    if (!Number.isFinite(l) || !Number.isFinite(r)) return null;
+    totalDiff += Math.abs(l - r);
+    leftValid++;
   }
 
-  const meanDiff = totalDiff / leftAngles.length;
-  // Normalized symmetry where 0 deg mean difference = 1.0, 45 deg difference = 0.5
-  const symmetry = Math.max(0, Math.min(1, 1 - meanDiff / 90));
+  if (leftValid < 15) return null;
+
+  const leftRange = Math.max(...leftAngles) - Math.min(...leftAngles);
+  const rightRange = Math.max(...rightAngles) - Math.min(...rightAngles);
+
+  // Require meaningful movement on at least one side
+  if (leftRange < 12 && rightRange < 12) {
+    return null;
+  }
+
+  const meanDiff = totalDiff / leftValid;
+  // Symmetry where 0 deg average difference = 1.0, and 60 deg difference = 0.33
+  const symmetry = Math.max(0.0, Math.min(1.0, 1.0 - meanDiff / 90.0));
   return Math.round(symmetry * 100) / 100;
 }

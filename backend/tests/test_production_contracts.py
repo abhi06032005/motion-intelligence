@@ -41,3 +41,23 @@ def test_upload_init_rejects_chunk_count_mismatch():
 def test_upload_session_id_rejects_path_traversal():
     with pytest.raises(HTTPException):
         _session_dir("../outside")
+
+
+def test_server_uploads_disabled_by_default():
+    assert settings.ENABLE_SERVER_UPLOADS is False
+
+
+def test_upload_endpoints_return_403_when_disabled():
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+    res_init = client.post(
+        "/api/upload/init",
+        json={"filename": "test.mp4", "total_size": 1024, "total_chunks": 1},
+    )
+    assert res_init.status_code == 403
+    assert "Server-side video uploads are disabled" in res_init.json()["detail"]
+
+    res_files = client.get("/api/upload/files")
+    assert res_files.status_code == 403

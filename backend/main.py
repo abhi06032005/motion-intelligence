@@ -54,10 +54,11 @@ app.include_router(upload_router, prefix="/api")
 app.include_router(yoga_router, prefix="/api")
 app.include_router(research_router, prefix="/api")
 
-# Mount uploads directory for serving videos
-uploads_path = Path(settings.UPLOAD_DIR)
-uploads_path.mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
+# Mount uploads directory for serving videos only if server-side uploads are enabled
+if settings.ENABLE_SERVER_UPLOADS:
+    uploads_path = Path(settings.UPLOAD_DIR)
+    uploads_path.mkdir(parents=True, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
 
 
 @app.get("/")

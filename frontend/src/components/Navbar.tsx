@@ -73,11 +73,11 @@ export function Navbar() {
         {/* Desktop Privacy Pill & CTA */}
         <div className="hidden sm:flex items-center gap-3">
           <div
-            title="All camera frames are processed directly inside your browser via WebAssembly. Zero video stream data is sent to external servers."
+            title="Client-Side Video: Raw video frames remain local. Anonymous 33-point pose landmark coordinates are streamed to the backend for real-time biomechanical analysis."
             className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-2.5 py-1 text-[11px] font-medium text-emerald-300"
           >
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Client-Side Privacy</span>
+            <span>Client-Side Video Privacy</span>
           </div>
 
           <Link
@@ -122,8 +122,11 @@ export function Navbar() {
             );
           })}
           <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <ShieldCheck className="h-4 w-4" /> Client-Side Privacy
+            <span
+              title="Client-Side Video: Raw video frames remain local. Anonymous 33-point pose landmark coordinates are streamed to the backend for real-time biomechanical analysis."
+              className="flex items-center gap-1.5 text-emerald-400"
+            >
+              <ShieldCheck className="h-4 w-4" /> Client-Side Video Privacy
             </span>
             <Link
               href="/workout"

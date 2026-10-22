@@ -11,7 +11,7 @@ export interface ExerciseSession {
   date: string;
   exercise: string;
   reps: number;
-  validReps: number;
+  validReps: number | null; // null if rep validity was not individually evaluated
   smoothness: number | null; // null if not available or insufficient movement
   symmetry: number | null;
   cameraView: string;
@@ -22,6 +22,9 @@ export interface ExerciseSession {
 }
 
 const STORAGE_KEY = "motioniq_user_sessions";
+
+// Known legacy demo IDs that were previously auto-injected into user localStorage
+const LEGACY_MOCK_IDS = new Set(["sess-001", "sess-002", "sess-003", "sess-004"]);
 
 export const SAMPLE_DEMO_SESSIONS: ExerciseSession[] = [
   {
@@ -83,8 +86,22 @@ export const SAMPLE_DEMO_SESSIONS: ExerciseSession[] = [
 ];
 
 /**
+ * Filter out legacy hardcoded sample sessions that were previously auto-injected.
+ * Preserves all genuine user data.
+ */
+export function migrateLegacySessions(sessions: ExerciseSession[]): {
+  cleaned: ExerciseSession[];
+  migratedCount: number;
+} {
+  const cleaned = sessions.filter((s) => !LEGACY_MOCK_IDS.has(s.id));
+  const migratedCount = sessions.length - cleaned.length;
+  return { cleaned, migratedCount };
+}
+
+/**
  * Retrieve saved user sessions from localStorage.
  * Does NOT auto-populate demo data; returns an empty array if no sessions exist.
+ * Automatically cleans any legacy mock entries from earlier versions.
  */
 export function getSavedSessions(): ExerciseSession[] {
   if (typeof window === "undefined") return [];
@@ -92,7 +109,15 @@ export function getSavedSessions(): ExerciseSession[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+
+    const { cleaned, migratedCount } = migrateLegacySessions(parsed);
+    if (migratedCount > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
+      } catch {}
+    }
+    return cleaned;
   } catch (err) {
     console.warn("Failed to load saved sessions from localStorage:", err);
     return [];
@@ -102,7 +127,9 @@ export function getSavedSessions(): ExerciseSession[] {
 /**
  * Persist a newly completed genuine exercise session.
  */
-export function saveSession(session: Omit<ExerciseSession, "id" | "date"> & { id?: string; date?: string }): ExerciseSession {
+export function saveSession(
+  session: Omit<ExerciseSession, "id" | "date"> & { id?: string; date?: string }
+): ExerciseSession {
   const newSession: ExerciseSession = {
     ...session,
     id: session.id || `sess_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
@@ -112,8 +139,20 @@ export function saveSession(session: Omit<ExerciseSession, "id" | "date"> & { id
   if (typeof window !== "undefined") {
     try {
       const existing = getSavedSessions();
-      const updated = [newSession, ...existing];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      // Guard against accidental duplicate insertion
+      const isDuplicate = existing.some(
+        (s) =>
+          s.id === newSession.id ||
+          (s.date === newSession.date &&
+            s.exercise === newSession.exercise &&
+            s.reps === newSession.reps &&
+            s.durationSeconds === newSession.durationSeconds)
+      );
+
+      if (!isDuplicate) {
+        const updated = [newSession, ...existing];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      }
     } catch (err) {
       console.error("Failed to save session to localStorage:", err);
     }

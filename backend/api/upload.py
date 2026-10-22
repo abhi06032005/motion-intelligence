@@ -20,14 +20,24 @@ from config.settings import settings
 router = APIRouter(prefix="/upload", tags=["upload"])
 logger = logging.getLogger(__name__)
 
-# Create upload directories
+# Create upload directories only when server uploads are enabled
 UPLOAD_DIR = Path(settings.UPLOAD_DIR)
 CHUNK_DIR = Path(settings.CHUNK_DIR)
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-CHUNK_DIR.mkdir(parents=True, exist_ok=True)
+if settings.ENABLE_SERVER_UPLOADS:
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    CHUNK_DIR.mkdir(parents=True, exist_ok=True)
 
 _UPLOAD_ID_RE = re.compile(r"^[a-f0-9]{32}$")
 _ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".webm", ".mkv"}
+
+
+def _check_upload_enabled() -> None:
+    """Disallow server-side video uploads when disabled for biometric privacy."""
+    if not settings.ENABLE_SERVER_UPLOADS:
+        raise HTTPException(
+            status_code=403,
+            detail="Server-side video uploads are disabled. Video analysis runs client-side via WebAssembly."
+        )
 
 
 class InitUploadRequest(BaseModel):
@@ -117,6 +127,7 @@ async def init_upload(request: InitUploadRequest):
     
     Creates a unique upload ID and session directory for chunk storage.
     """
+    _check_upload_enabled()
     safe_name = _validate_init_request(request)
     upload_id = uuid.uuid4().hex
     
@@ -155,6 +166,7 @@ async def upload_chunk(
     
     Chunks are stored temporarily and assembled on completion.
     """
+    _check_upload_enabled()
     session_dir = _session_dir(upload_id)
     
     if not session_dir.exists():
@@ -207,6 +219,7 @@ async def get_upload_status(upload_id: str):
     
     Useful for resuming interrupted uploads.
     """
+    _check_upload_enabled()
     session_dir = _session_dir(upload_id)
     
     if not session_dir.exists():
@@ -234,6 +247,7 @@ async def complete_upload(upload_id: str, background_tasks: BackgroundTasks):
     Verifies all chunks are present, assembles the final file,
     and schedules cleanup of chunk files.
     """
+    _check_upload_enabled()
     session_dir = _session_dir(upload_id)
     
     if not session_dir.exists():
@@ -301,6 +315,7 @@ async def complete_upload(upload_id: str, background_tasks: BackgroundTasks):
 @router.delete("/{upload_id}")
 async def cancel_upload(upload_id: str):
     """Cancel an upload and clean up chunks."""
+    _check_upload_enabled()
     session_dir = _session_dir(upload_id)
     
     if session_dir.exists():
@@ -321,6 +336,7 @@ async def cleanup_chunks(session_dir: Path):
 @router.get("/files")
 async def list_uploaded_files():
     """List uploaded video files (disabled in production to preserve user privacy)."""
+    _check_upload_enabled()
     if not settings.DEBUG:
         return {
             "files": [],

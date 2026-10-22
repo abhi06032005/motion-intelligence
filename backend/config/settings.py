@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # Upload settings
+    ENABLE_SERVER_UPLOADS: bool = False
     UPLOAD_DIR: str = "./uploads"
     CHUNK_DIR: str = "./uploads/chunks"
     MAX_FILE_SIZE: int = 5 * 1024 * 1024 * 1024  # 5GB

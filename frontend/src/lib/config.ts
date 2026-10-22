@@ -1,9 +1,33 @@
 /**
  * Global configuration and environment helpers for MotionIQ.
+ *
+ * Centralizes HTTP and WebSocket endpoints across local development,
+ * containerized setups, and production environments.
  */
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+  }
+
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    const isLocalhost =
+      hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0";
+
+    // In local development where frontend runs on 3000 and FastAPI runs on 8000
+    if (isLocalhost && window.location.port === "3000") {
+      return `${window.location.protocol}//${hostname}:8000`;
+    }
+
+    // In production or reverse-proxy deployments, use same origin without guessing ports
+    return window.location.origin;
+  }
+
+  return "http://localhost:8000";
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export function getWebSocketUrl(endpoint: string, clientId: string): string {
   const cleanEndpoint = endpoint.replace(/^\/+/, "").replace(/\/+$/, "");
@@ -15,10 +39,18 @@ export function getWebSocketUrl(endpoint: string, clientId: string): string {
   }
 
   if (typeof window !== "undefined") {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const isHttps = window.location.protocol === "https:";
+    const protocol = isHttps ? "wss:" : "ws:";
     const hostname = window.location.hostname;
-    // In local dev with frontend on 3000, default backend to port 8000
-    const port = window.location.port === "3000" ? "8000" : window.location.port;
+    const isLocalhost =
+      hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0";
+
+    // Only map port 3000 -> 8000 for local dev loopback
+    let port = window.location.port;
+    if (isLocalhost && port === "3000") {
+      port = "8000";
+    }
+
     const host = port ? `${hostname}:${port}` : hostname;
     return `${protocol}//${host}/api/${cleanEndpoint}/${cleanClientId}`;
   }
