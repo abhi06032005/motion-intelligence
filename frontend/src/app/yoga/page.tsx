@@ -72,14 +72,14 @@ export default function YogaPage() {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.hold_duration !== undefined) {
-            const secs = Math.round(data.hold_duration);
+          if (data.hold_seconds !== undefined) {
+            const secs = Math.round(data.hold_seconds);
             setHoldSeconds(secs);
             if (secs > maxHoldRef.current) {
               maxHoldRef.current = secs;
             }
             setInPose(data.is_in_pose ?? false);
-            setViolations(data.deviations || []);
+            setViolations(data.violations || []);
           }
         } catch (err) {}
       };
@@ -247,7 +247,7 @@ export default function YogaPage() {
             if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
               wsRef.current.send(
                 JSON.stringify({
-                  pose_id: selectedPoseRef.current,
+                  pose: selectedPoseRef.current,
                   landmarks: lms,
                   timestamp: Date.now() / 1000.0,
                 })
