@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 
 from models.model_a_baseline import ModelABaseline
 from models.model_b_view_gated import ModelBViewGated
@@ -35,7 +35,14 @@ _MODELS = {
 class ModelEvaluationRequest(BaseModel):
     model_id: str
     exercise: Optional[str] = "squat"
-    landmarks_sequence: List[List[Dict[str, float]]]
+    landmarks_sequence: List[List[Dict[str, float]]] = Field(min_length=1, max_length=600)
+
+    @model_validator(mode="after")
+    def validate_frames(self):
+        if any(len(frame) != 33 for frame in self.landmarks_sequence):
+            raise ValueError("Each frame requires exactly 33 landmarks")
+        return self
+
 
 
 @router.get("/summary")
