@@ -231,8 +231,9 @@ export default function AnalysePage() {
         // Await confirmed frame seeking without race timeouts
         await seekToFrameConfirmed(video, curr);
 
-        const timestampMs = Math.round(curr * 1000);
-        const results = landmarker.detectForVideo(video, timestampMs);
+        // MediaPipe VIDEO mode expects monotonically increasing inference timestamps.
+        // Video seek position is separate and may restart at 0 for new uploads.
+        const results = landmarker.detectForVideo(video, performance.now());
 
         if (results.landmarks && results.landmarks[0]) {
           const lms = results.landmarks[0] as NormalizedLandmark[];

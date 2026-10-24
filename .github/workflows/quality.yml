@@ -71,3 +71,29 @@ jobs:
               assert result["total_samples"] == 600
           print("Artifact schema and confusion-matrix totals checked")
           PY
+
+  lockfile-refresh:
+    name: Refresh dependency lockfile for security upgrade
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/motioniq-reliability-dashboard-20261024'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refresh lockfile
+        run: pnpm --dir frontend install --lockfile-only --no-frozen-lockfile
+      - name: Commit regenerated lockfile to feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add frontend/pnpm-lock.yaml
+          if ! git diff --cached --quiet; then
+            git commit -m "build(deps): lock patched Next.js and sharp dependencies"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
