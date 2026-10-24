@@ -5,7 +5,7 @@ import re
 import time
 from typing import Optional
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
 from config.settings import settings
@@ -51,13 +51,21 @@ class ConnectionManager:
         self.form_managers: dict[str, FormManager] = {}
         self._last_frame_times: dict[str, float] = {}
 
-    async def connect(self, websocket: WebSocket, client_id: str) -> None:
+    async def connect(self, websocket: WebSocket, client_id: str) -> bool:
+        # Never replace another client's session (or send their frames to this socket).
+        if client_id in self.active_connections:
+            await websocket.close(code=1008, reason="Client ID already connected")
+            return False
         await websocket.accept()
         self.active_connections[client_id] = websocket
         self.form_managers[client_id] = FormManager()
         self._last_frame_times[client_id] = 0.0
+        return True
 
-    def disconnect(self, client_id: str) -> None:
+    def disconnect(self, client_id: str, websocket: WebSocket) -> None:
+        # A late disconnect must not delete a newer connection's state.
+        if self.active_connections.get(client_id) is not websocket:
+            return
         self.active_connections.pop(client_id, None)
         self.form_managers.pop(client_id, None)
         self._last_frame_times.pop(client_id, None)
@@ -93,12 +101,19 @@ async def pose_websocket(websocket: WebSocket, client_id: str):
         await websocket.close(code=1008, reason="Invalid client_id")
         return
 
-    await manager.connect(websocket, client_id)
+    if not await manager.connect(websocket, client_id):
+        return
     form_manager = manager.get_manager(client_id)
 
     try:
         while True:
             data = await websocket.receive_json()
+            if not isinstance(data, dict):
+                continue
+            # Session reset is only accepted on the socket that owns this session.
+            if data.get("action") == "reset":
+                form_manager.reset()
+                continue
             processing_started = time.perf_counter()
 
             if not data.get("landmarks"):
@@ -143,10 +158,11 @@ async def pose_websocket(websocket: WebSocket, client_id: str):
             await manager.send_response(client_id, response)
 
     except WebSocketDisconnect:
-        manager.disconnect(client_id)
+        pass
     except Exception:
         logger.exception("WebSocket error for client_id=%s", client_id)
-        manager.disconnect(client_id)
+    finally:
+        manager.disconnect(client_id, websocket)
 
 
 def _build_correction_message(result) -> str:
@@ -184,8 +200,6 @@ async def list_supported_exercises():
 
 @router.post("/reset/{client_id}")
 async def reset_session(client_id: str):
-    form_manager = manager.get_manager(client_id)
-    if form_manager:
-        form_manager.reset()
-        return {"status": "reset", "client_id": client_id}
-    return {"status": "not_found", "client_id": client_id}
+    # Retained as an explicit deprecation response; without authentication,
+    # resetting another connected client by its URL ID is unsafe.
+    raise HTTPException(status_code=410, detail="Reset through the owner's live WebSocket connection")

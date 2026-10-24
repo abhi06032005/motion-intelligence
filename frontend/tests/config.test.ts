@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
   },
 };
 
-import { getWebSocketUrl, getApiBaseUrl } from "../src/lib/config";
+import { getWebSocketUrl, getApiBaseUrl } from "../src/lib/config.ts";
 
 test("getApiBaseUrl maps localhost:3000 to localhost:8000 for local development", () => {
   (globalThis as any).window.location = {

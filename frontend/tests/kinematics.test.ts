@@ -4,7 +4,7 @@ import {
   calculateJointAngle,
   computeKinematicSmoothness,
   computeBilateralSymmetry,
-} from "../src/lib/kinematics";
+} from "../src/lib/kinematics.ts";
 
 test("calculateJointAngle calculates 90 degrees correctly for planar orthogonal vectors", () => {
   const hip = { x: 0, y: 1, z: 0 };

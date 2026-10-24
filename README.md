@@ -106,14 +106,16 @@ Evaluated on **200 authentic Vicon optical motion-capture recordings** from the 
 - Python 3.11+ and Node.js 18+ with `pnpm`.
 
 ### Installation
+Install Python packages before starting the backend and Node dependencies before starting the frontend.
 ```powershell
 # 1. Clone repository
-git clone https://github.com/motioniq/motioniq.git
-cd motioniq
+git clone https://github.com/abhi06032005/motion-intelligence.git
+cd motion-intelligence
 
 # 2. Setup Python environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+pip install -r backend/requirements.txt
 
 # 3. Setup Frontend
 cd frontend

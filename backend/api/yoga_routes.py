@@ -10,7 +10,7 @@ import logging
 import re
 from typing import Optional
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import HTTPException, APIRouter, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
 from config.settings import settings
@@ -48,12 +48,18 @@ class YogaConnectionManager:
         self.active_connections: dict[str, WebSocket] = {}
         self.yoga_managers: dict[str, YogaManager] = {}
 
-    async def connect(self, websocket: WebSocket, client_id: str) -> None:
+    async def connect(self, websocket: WebSocket, client_id: str) -> bool:
+        if client_id in self.active_connections:
+            await websocket.close(code=1008, reason="Client ID already connected")
+            return False
         await websocket.accept()
         self.active_connections[client_id] = websocket
         self.yoga_managers[client_id] = YogaManager()
+        return True
 
-    def disconnect(self, client_id: str) -> None:
+    def disconnect(self, client_id: str, websocket: WebSocket) -> None:
+        if self.active_connections.get(client_id) is not websocket:
+            return
         self.active_connections.pop(client_id, None)
         self.yoga_managers.pop(client_id, None)
 
@@ -137,13 +143,18 @@ async def yoga_websocket(websocket: WebSocket, client_id: str):
         await websocket.close(code=1008, reason="Invalid client_id")
         return
 
-    await manager.connect(websocket, client_id)
+    if not await manager.connect(websocket, client_id):
+        return
     yoga_manager = manager.get_manager(client_id)
 
     try:
         while True:
             data = await websocket.receive_json()
-
+            if not isinstance(data, dict):
+                continue
+            if data.get("action") == "reset":
+                yoga_manager.reset()
+                continue
             if not data.get("landmarks"):
                 continue
 
@@ -165,10 +176,11 @@ async def yoga_websocket(websocket: WebSocket, client_id: str):
             await manager.send_response(client_id, _build_response(state, timestamp))
 
     except WebSocketDisconnect:
-        manager.disconnect(client_id)
+        pass
     except Exception:
         logger.exception("Yoga WebSocket error for client_id=%s", client_id)
-        manager.disconnect(client_id)
+    finally:
+        manager.disconnect(client_id, websocket)
 
 
 @router.get("/yoga/poses")
@@ -195,8 +207,4 @@ async def yoga_health():
 
 @router.post("/reset/yoga/{client_id}")
 async def reset_yoga_session(client_id: str):
-    yoga_manager = manager.get_manager(client_id)
-    if yoga_manager:
-        yoga_manager.reset()
-        return {"status": "reset", "client_id": client_id}
-    return {"status": "not_found", "client_id": client_id}
+    raise HTTPException(status_code=410, detail="Reset through the owner's live WebSocket connection")

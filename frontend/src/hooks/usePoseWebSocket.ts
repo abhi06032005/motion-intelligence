@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { NormalizedLandmark } from "@/lib/mediapipe";
 import { recordResponse, recordSend } from "@/lib/cameraAudit";
-import { API_BASE_URL, getWebSocketUrl } from "@/lib/config";
+import { getWebSocketUrl } from "@/lib/config";
 
 export type WebSocketState = "disconnected" | "connecting" | "connected" | "error";
 
@@ -58,7 +58,7 @@ export function usePoseWebSocket(mode: "exercise" | "yoga" = "exercise") {
   }, [enableVoice]);
 
   const connect = useCallback(() => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+    if (socketRef.current && (socketRef.current.readyState === WebSocket.OPEN || socketRef.current.readyState === WebSocket.CONNECTING)) {
       return;
     }
 
@@ -71,7 +71,7 @@ export function usePoseWebSocket(mode: "exercise" | "yoga" = "exercise") {
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        setWsState("connected");
+        if (socketRef.current === ws) setWsState("connected");
       };
 
       ws.onmessage = (event) => {
@@ -108,12 +108,13 @@ export function usePoseWebSocket(mode: "exercise" | "yoga" = "exercise") {
 
       ws.onerror = (err) => {
         console.warn("WebSocket error:", err);
-        setWsState("error");
+        if (socketRef.current === ws) setWsState("error");
       };
 
       ws.onclose = () => {
-        if (!isManuallyClosedRef.current) {
-          setWsState("disconnected");
+        if (socketRef.current === ws) {
+          socketRef.current = null;
+          if (!isManuallyClosedRef.current) setWsState("disconnected");
         }
       };
 
@@ -154,11 +155,12 @@ export function usePoseWebSocket(mode: "exercise" | "yoga" = "exercise") {
     []
   );
 
-  const resetSession = useCallback(async () => {
-    try {
-      await fetch(`${API_BASE_URL}/api/reset/${clientIdRef.current}`, { method: "POST" });
-    } catch {}
+  const resetSession = useCallback((): boolean => {
+    const socket = socketRef.current;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return false;
+    socket.send(JSON.stringify({ action: "reset" }));
     setLastMessage(null);
+    return true;
   }, []);
 
   useEffect(() => {

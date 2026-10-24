@@ -171,6 +171,15 @@ export default function WorkoutPage() {
     }
   }, []);
 
+  // Keep local summary counters in sync with the backend reset.
+  const handleResetSession = useCallback(() => {
+    if (!resetSession()) return;
+    completedRepsRef.current = 0;
+    validRepsCountRef.current = 0;
+    lastObservedRepCountRef.current = 0;
+    observedViolationsRef.current.clear();
+  }, [resetSession]);
+
   // User-facing Stop handler
   const handleStopCamera = useCallback(() => {
     persistSessionOnStop();
@@ -362,7 +371,7 @@ export default function WorkoutPage() {
                 </button>
 
                 <button
-                  onClick={resetSession}
+                  onClick={handleResetSession}
                   className="flex items-center gap-1.5 rounded-full border border-[#E9EBED] bg-white px-4 py-2 text-xs font-semibold text-[#8E9399] hover:text-[#202226] hover:bg-[#F0F1F3] transition-colors shadow-2xs"
                   title="Reset Rep Counter"
                 >
