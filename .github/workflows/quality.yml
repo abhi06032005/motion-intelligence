@@ -75,28 +75,3 @@ jobs:
           PY
 
 
-  lockfile-refresh:
-    name: Refresh lockfile for PostCSS fix
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/motioniq-reliability-dashboard-20261024'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: '9'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Generate patched lockfile
-        run: pnpm --dir frontend install --lockfile-only --no-frozen-lockfile
-      - name: Push lockfile
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add frontend/pnpm-lock.yaml
-          if ! git diff --cached --quiet; then
-            git commit -m "build(deps): override vulnerable transitive PostCSS"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
