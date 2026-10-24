@@ -11,13 +11,9 @@ import {
   History,
   LineChart,
   Search,
-  Bell,
-  Settings,
-  ShieldCheck,
   Menu,
   X,
   Activity,
-  Layers,
 } from "lucide-react";
 
 interface DashboardShellProps {
@@ -85,41 +81,36 @@ export function DashboardShell({ children, rightPanel }: DashboardShellProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
+              placeholder="Find a page..."
+              aria-label="Search MotionIQ pages"
               className="w-full bg-white rounded-full border border-[#E9EBED] pl-9 pr-4 py-2 text-xs sm:text-sm text-[#202226] placeholder-[#8E9399] shadow-2xs focus:outline-none focus:border-[#202226] focus:ring-1 focus:ring-[#202226] transition-all"
             />
+            {searchQuery.trim() && (
+              <div className="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-[#E9EBED] bg-white p-2 shadow-lg">
+                {NAV_ITEMS.filter((item) => item.label.toLowerCase().includes(searchQuery.trim().toLowerCase())).length === 0 ? (
+                  <p className="px-3 py-2 text-xs text-[#8E9399]">No matching pages</p>
+                ) : NAV_ITEMS.filter((item) => item.label.toLowerCase().includes(searchQuery.trim().toLowerCase())).map((item) => (
+                  <Link key={item.href} href={item.href} onClick={() => setSearchQuery("")} className="block rounded-xl px-3 py-2 text-xs font-semibold hover:bg-[#F0F1F3]">{item.label}</Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right: Status Pill, Notification, User Profile */}
+        {/* Right: App navigation */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Mint Status Pill */}
           <div
             title="Raw webcam frames are processed client-side via WebAssembly; 33 landmark points streamed via WebSockets."
             className="hidden sm:flex items-center gap-2 bg-[#D9F0EC] text-[#202226] px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-2xs"
           >
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Online support</span>
+            <span className="h-2 w-2 rounded-full bg-[#202226]" />
+            <span>Browser pose tracking</span>
           </div>
 
-          {/* Notification Icon Button */}
-          <button
-            className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-white border border-[#E9EBED] flex items-center justify-center text-[#202226] hover:bg-slate-50 transition-colors shadow-2xs relative"
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4 text-[#202226]" />
-            <span className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          </button>
-
-          {/* User Profile Pill */}
-          <div className="flex items-center gap-2.5 bg-white border border-[#E9EBED] pl-3 pr-1.5 py-1 rounded-full shadow-2xs">
-            <span className="hidden md:inline text-xs font-semibold text-[#202226]">
-              Nika Meyer
-            </span>
-            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-tr from-[#EDE2F2] to-[#D9F0EC] border border-[#E9EBED] flex items-center justify-center text-[#202226] font-bold text-xs overflow-hidden">
-              <span className="text-[11px] font-bold text-[#202226]">NM</span>
-            </div>
-          </div>
+          <Link href="/sessions" className="hidden sm:flex items-center gap-2 rounded-full border border-[#E9EBED] bg-white px-3.5 py-2 text-xs font-semibold text-[#202226] hover:bg-[#EAF7F5]">
+            <Activity className="h-4 w-4" /> My sessions
+          </Link>
 
           {/* Mobile Menu Toggle Button */}
           <button
@@ -186,25 +177,9 @@ export function DashboardShell({ children, rightPanel }: DashboardShellProps) {
             })}
           </div>
 
-          {/* Bottom Controls: Switch pill & Avatar */}
-          <div className="flex flex-col items-center gap-3.5 w-full pt-4">
-            {/* Vertical Switch Toggle Pill matching screenshot */}
-            <div
-              title="Camera WebAssembly Acceleration"
-              className="h-12 w-6 rounded-full bg-[#202226] p-0.5 flex flex-col justify-end items-center cursor-pointer shadow-xs"
-            >
-              <div className="h-5 w-5 rounded-full bg-[#D9F0EC] flex items-center justify-center shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#202226]" />
-              </div>
-            </div>
-
-            {/* Bottom mini avatar pill matching screenshot */}
-            <div className="flex flex-col items-center gap-1.5 p-1 rounded-2xl bg-[#F0F1F3] border border-[#E9EBED]">
-              <div className="h-7 w-7 rounded-full bg-[#EDE2F2] border border-[#E9EBED] flex items-center justify-center text-[10px] font-bold text-[#202226]">
-                NM
-              </div>
-            </div>
-          </div>
+          <Link href="/research" title="Explore research methodology" className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF7F5] text-[#202226] hover:bg-[#D9F0EC]">
+            <LineChart className="h-4 w-4" />
+          </Link>
         </aside>
 
         {/* CENTER PRIMARY WHITE WORKSPACE */}

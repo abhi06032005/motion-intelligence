@@ -28,6 +28,7 @@ import {
 import { DashboardShell } from "@/components/DashboardShell";
 import { RightContextualPanel } from "@/components/RightContextualPanel";
 import { getSavedSessions, ExerciseSession } from "@/lib/sessionStorage";
+import { getActivityColumns, getAverageSmoothness, getDashboardSessions, getMovementMix, getRepValidityPercent } from "@/lib/dashboardMetrics";
 
 export default function DashboardPage() {
   const [sessions, setSessions] = useState<ExerciseSession[]>([]);
@@ -40,12 +41,15 @@ export default function DashboardPage() {
     setSessions(saved);
   }, []);
 
-  const totalReps = sessions.reduce((acc, s) => acc + (s.reps || 0), 0);
-  const totalSessionsCount = sessions.length;
-
-  // Use real numbers if sessions exist, otherwise provide clean baseline numbers
-  const displayMovementsCount = totalReps > 0 ? totalReps : 124;
-  const displaySessionsCount = totalSessionsCount > 0 ? totalSessionsCount : 18;
+  // Every number shown is computed from genuine locally saved sessions.
+  const visibleSessions = getDashboardSessions(sessions, activeTab);
+  const displayMovementsCount = visibleSessions.reduce((sum, session) => sum + Math.max(0, session.reps), 0);
+  const displaySessionsCount = visibleSessions.length;
+  const activityColumns = getActivityColumns(visibleSessions, timeRange);
+  const movementMix = getMovementMix(visibleSessions);
+  const averageSmoothness = getAverageSmoothness(visibleSessions);
+  const validRepPercent = getRepValidityPercent(visibleSessions);
+  const violationCount = visibleSessions.reduce((sum, session) => sum + session.violations.length, 0);
 
   const rightPanel = (
     <RightContextualPanel
@@ -97,7 +101,7 @@ export default function DashboardPage() {
                   <span className="text-xl sm:text-2xl font-extrabold text-[#202226] tracking-tight">
                     {displayMovementsCount}
                   </span>
-                  <span className="text-[10px] text-[#8E9399]">reps/month</span>
+                  <span className="text-[10px] text-[#8E9399]">recorded reps</span>
                 </div>
               </div>
             </div>
@@ -129,7 +133,7 @@ export default function DashboardPage() {
                   <span className="text-xl sm:text-2xl font-extrabold text-[#202226] tracking-tight">
                     {displaySessionsCount}
                   </span>
-                  <span className="text-[10px] text-[#8E9399]">trials</span>
+                  <span className="text-[10px] text-[#8E9399]">records</span>
                 </div>
               </div>
             </div>
@@ -144,7 +148,7 @@ export default function DashboardPage() {
               return (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => tab === "Sessions" ? (window.location.href = "/sessions") : setActiveTab(tab)}
                   className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
                     isActive
                       ? "bg-[#D9F0EC] text-[#202226] shadow-2xs"
@@ -173,7 +177,7 @@ export default function DashboardPage() {
           <div className="hidden sm:flex items-center gap-2 shrink-0">
             <Link
               href="/sessions"
-              title="Export sessions JSON"
+              title="Open sessions to export JSON"
               className="h-8 w-8 rounded-full border border-[#E9EBED] flex items-center justify-center text-[#8E9399] hover:text-[#202226] hover:bg-[#F0F1F3] transition-colors"
             >
               <Download className="h-3.5 w-3.5" />
@@ -194,7 +198,7 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-[#202226] text-white text-[11px] font-bold shadow-xs">
-                Live
+                Recorded
               </span>
               <div className="flex items-center gap-1.5 text-xs text-[#202226] font-medium ml-2">
                 <button
@@ -219,7 +223,7 @@ export default function DashboardPage() {
 
             {/* Subdued status toggle on top right matching reference */}
             <div className="hidden sm:flex items-center gap-2 text-xs text-[#8E9399]">
-              <span>Active pipeline tracking</span>
+              <span>Locally saved session activity</span>
               <div className="h-4 w-7 rounded-full bg-[#202226] p-0.5 flex items-center justify-end">
                 <div className="h-3 w-3 rounded-full bg-white shadow-xs" />
               </div>
@@ -246,7 +250,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-[#202226]">Your device</div>
-                    <div className="text-[10px] text-[#8E9399]">Active (WASM 60 FPS)</div>
+                    <div className="text-[10px] text-[#8E9399]">Camera runs only when started</div>
                   </div>
                 </div>
                 <div className="h-6 w-6 rounded-full bg-[#F0F1F3] flex items-center justify-center text-[#202226]">
@@ -259,11 +263,11 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-bold text-[#202226]">Movement posture</div>
                   <span className="text-[10px] font-semibold text-emerald-600 bg-[#EAF7F5] px-2 py-0.5 rounded-full">
-                    Aligned
+                    {displaySessionsCount === 0 ? "No data" : "Recorded"}
                   </span>
                 </div>
                 <div className="text-[10px] text-[#8E9399]">
-                  0 unconfirmed kinematic violations
+                  {displaySessionsCount === 0 ? "No assessments saved yet" : `${violationCount} reported form observations`}
                 </div>
                 <div className="flex items-center gap-2 pt-1">
                   <Link
@@ -285,33 +289,24 @@ export default function DashboardPage() {
             {/* Center/Right: The Signature Stacked Block Bar Chart */}
             <div className="lg:col-span-7 flex items-end justify-between gap-2 sm:gap-3.5 pt-4">
               {/* 8 Columns of Stacked Blocks matching reference image */}
-              {[
-                { date: "22 Sept", count: 2, active: false },
-                { date: "23 Sept", count: 3, active: false },
-                { date: "24 Sept", count: 4, active: false },
-                { date: "25 Sept", count: 5, active: true, accentDot: true },
-                { date: "26 Sept", count: 6, active: true },
-                { date: "27 Sept", count: 5, active: true },
-                { date: "28 Sept", count: 4, active: false },
-                { date: "Today", count: 3, active: true },
-              ].map((col, idx) => {
+              {activityColumns.map((col, idx) => {
                 return (
                   <div key={idx} className="flex flex-col items-center gap-2 flex-1">
                     {/* Column of stacked rounded squircle blocks */}
                     <div className="flex flex-col-reverse gap-1.5 items-center w-full max-w-[34px]">
-                      {Array.from({ length: col.count }).map((_, blockIdx) => {
-                        const isTop = blockIdx === col.count - 1;
+                      {Array.from({ length: Math.max(col.blocks, 1) }).map((_, blockIdx) => {
+                        const isTop = blockIdx === col.blocks - 1;
                         return (
                           <div
                             key={blockIdx}
                             className={`w-full h-5 sm:h-6 rounded-lg transition-all relative ${
-                              col.active
+                              col.sessions > 0
                                 ? "bg-[#25292A] shadow-2xs"
                                 : "bg-[#E7EAEC] opacity-80"
                             }`}
                           >
                             {/* Gold accent dot on the selected peak block matching screenshot */}
-                            {col.accentDot && isTop && (
+                            {col.sessions > 0 && isTop && (
                               <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-amber-400" />
                             )}
                           </div>
@@ -320,40 +315,16 @@ export default function DashboardPage() {
                     </div>
                     {/* Day label below */}
                     <span className="text-[10px] font-medium text-[#8E9399] tracking-tight whitespace-nowrap">
-                      {col.date}
+                      {col.label}
                     </span>
                   </div>
                 );
               })}
             </div>
 
-            {/* Right Mini Pill Toolbar matching screenshot (vertical dock) */}
-            <div className="hidden lg:flex flex-col items-center gap-2 bg-[#202226] text-white p-1.5 rounded-full shadow-xs shrink-0 self-center">
-              <button
-                title="Bar view"
-                className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center text-white"
-              >
-                <BarChart2 className="h-3.5 w-3.5" />
-              </button>
-              <button
-                title="Cadence time"
-                className="h-7 w-7 rounded-full flex items-center justify-center text-[#8E9399] hover:text-white"
-              >
-                <Clock className="h-3.5 w-3.5" />
-              </button>
-              <button
-                title="Trend lines"
-                className="h-7 w-7 rounded-full flex items-center justify-center text-[#8E9399] hover:text-white"
-              >
-                <TrendingUp className="h-3.5 w-3.5" />
-              </button>
-              <button
-                title="More"
-                className="h-7 w-7 rounded-full flex items-center justify-center text-[#8E9399] hover:text-white"
-              >
-                <MoreHorizontal className="h-3.5 w-3.5" />
-              </button>
-            </div>
+            <Link href="/sessions" title="Review recorded sessions" className="hidden lg:flex items-center justify-center h-10 w-10 rounded-full bg-[#202226] text-white hover:bg-black shrink-0 self-center">
+              <History className="h-4 w-4" />
+            </Link>
           </div>
         </div>
 
@@ -364,27 +335,22 @@ export default function DashboardPage() {
             <div>
               <h3 className="text-sm font-bold text-[#202226]">Most practiced</h3>
               <p className="text-[11px] text-[#8E9399] mt-0.5">
-                5 tracked movement categories
+                Share of your recorded repetitions
               </p>
             </div>
 
             {/* 5 Vertical Progress Bars matching reference */}
             <div className="flex items-end justify-between gap-3 pt-6 pb-2">
-              {[
-                { name: "Squat", pct: 35, color: "bg-[#D9F0EC] text-[#202226]", icon: Dumbbell },
-                { name: "Push-up", pct: 72, color: "bg-[#EDE2F2] text-[#202226]", icon: Activity },
-                { name: "Curls", pct: 50, color: "bg-[#25292A] text-white", icon: User },
-                { name: "Yoga", pct: 76, color: "bg-[#D9F0EC] text-[#202226]", icon: Sparkles },
-                { name: "Other", pct: 37, color: "bg-[#EDE2F2] text-[#202226]", icon: Layers },
-              ].map((item, idx) => {
-                const Icon = item.icon;
+              {movementMix.map((item, idx) => {
+                const Icon = [Dumbbell, Activity, User, Sparkles, Layers][idx];
+                const fillClass = ["bg-[#D9F0EC] text-[#202226]", "bg-[#EDE2F2] text-[#202226]", "bg-[#25292A] text-white", "bg-[#D9F0EC] text-[#202226]", "bg-[#EDE2F2] text-[#202226]"][idx];
                 return (
                   <div key={idx} className="flex flex-col items-center gap-2 flex-1">
                     {/* Vertical Pill Track */}
                     <div className="h-28 w-8 rounded-full bg-[#F0F1F3] p-1 flex flex-col justify-end relative">
                       <div
                         style={{ height: `${item.pct}%` }}
-                        className={`w-full rounded-full ${item.color} flex items-center justify-center text-[10px] font-bold shadow-2xs transition-all`}
+                        className={`w-full rounded-full ${fillClass} flex items-center justify-center text-[10px] font-bold shadow-2xs transition-all`}
                       >
                         {item.pct}%
                       </div>
@@ -405,7 +371,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-[#202226]">Movement quality</h3>
                 <span className="text-[10px] font-semibold text-[#202226] bg-[#D9F0EC] px-2.5 py-0.5 rounded-full">
-                  Normal
+                  {displaySessionsCount ? "Recorded" : "No data"}
                 </span>
               </div>
               <p className="text-[11px] text-[#8E9399] mt-0.5">
@@ -416,8 +382,8 @@ export default function DashboardPage() {
             {/* Top Arched Dots Graphic matching screenshot */}
             <div className="flex items-center justify-between px-2 pt-1">
               <div>
-                <div className="text-2xl font-extrabold text-[#202226]">23%</div>
-                <div className="text-[10px] text-[#8E9399]">excursion variance</div>
+                <div className="text-2xl font-extrabold text-[#202226]">{averageSmoothness === null ? "—" : `${averageSmoothness}%`}</div>
+                <div className="text-[10px] text-[#8E9399]">mean recorded smoothness</div>
               </div>
 
               {/* Arched dot markers graphic */}
@@ -440,9 +406,9 @@ export default function DashboardPage() {
             {/* Bottom Dark Analytics Card matching screenshot */}
             <div className="bg-[#202223] text-white rounded-[20px] p-3.5 shadow-2xs relative overflow-hidden">
               <div className="flex items-center justify-between text-xs mb-2">
-                <span className="text-[11px] text-[#8E9399]">Verification speed</span>
+                <span className="text-[11px] text-[#8E9399]">Valid repetition rate</span>
                 <span className="text-[10px] font-semibold text-[#D9F0EC] bg-white/10 px-2 py-0.5 rounded-full">
-                  17% &gt;
+                  From recorded sessions
                 </span>
               </div>
 
@@ -462,7 +428,7 @@ export default function DashboardPage() {
                   />
                 </svg>
 
-                <div className="text-lg font-bold text-white">94%</div>
+                <div className="text-lg font-bold text-white">{validRepPercent === null ? "—" : `${validRepPercent}%`}</div>
               </div>
             </div>
           </div>
