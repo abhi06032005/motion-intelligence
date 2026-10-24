@@ -45,6 +45,7 @@ type BenchmarkData = {
 
 export default function ResearchPage() {
   const [benchmark, setBenchmark] = useState<BenchmarkData | null>(null);
+  const [apiStatus, setApiStatus] = useState<"loading" | "loaded" | "unavailable">("loading");
   const [activeTab, setActiveTab] = useState<"loso" | "views" | "subjects" | "latency" | "audit">("loso");
 
   useEffect(() => {
@@ -53,43 +54,24 @@ export default function ResearchPage() {
         if (!res.ok) throw new Error("Historical artifact unavailable");
         return res.json();
       })
-      .then(setBenchmark)
+      .then((data: BenchmarkData) => {
+        setBenchmark(data);
+        setApiStatus("loaded");
+      })
       .catch(() => {
-        // Silently preserve offline state; fallback data is rendered in UI
+        setApiStatus("unavailable");
       });
   }, []);
 
   const downloadReport = () => {
-    const reportData = benchmark
-      ? {
-          benchmark_title: "MotionIQ Phase 6 Leave-One-Subject-Out Benchmark",
-          dataset: "UI-PRMD Deep Squats (200 authentic Vicon recordings, 10 subjects, 600 projected streams)",
-          evaluation_protocol: "Leave-One-Subject-Out (LOSO) 10-Fold Cross-Validation with 95% Bootstrap CIs",
-          source: "MotionIQ Research API Verified Benchmark",
-          exported_at: new Date().toISOString(),
-          ...benchmark,
-        }
-      : {
-          benchmark_title: "MotionIQ Phase 6 Leave-One-Subject-Out Benchmark",
-          dataset: "UI-PRMD Deep Squats (200 authentic Vicon recordings, 10 subjects, 600 projected streams)",
-          evaluation_protocol: "Leave-One-Subject-Out (LOSO) 10-Fold Cross-Validation with 95% Bootstrap CIs",
-          models_evaluated: [
-            { model: "baseline_majority", sens: 0.0, spec: 100.0, fwr: 0.0, bacc: 50.0, f1: 0.333, coverage: 100.0, risk: 50.0 },
-            { model: "baseline_always_abstain", sens: 0.0, spec: 0.0, fwr: 0.0, bacc: 0.0, f1: 0.000, coverage: 0.0, risk: 0.0 },
-            { model: "model_a_rules", sens: 89.0, spec: 50.7, fwr: 49.3, bacc: 69.8, f1: 0.687, coverage: 100.0, risk: 30.2 },
-            { model: "model_b_temporal", sens: 100.0, spec: 0.0, fwr: 100.0, bacc: 50.0, f1: 0.333, coverage: 100.0, risk: 50.0 },
-            { model: "model_c_supervised_temporal", sens: 71.7, spec: 77.0, fwr: 23.0, bacc: 74.3, f1: 0.743, coverage: 100.0, risk: 25.7 },
-            { model: "model_d_view_aware_supervised", sens: 77.0, spec: 79.7, fwr: 20.3, bacc: 78.3, f1: 0.783, coverage: 100.0, risk: 21.7 },
-            { model: "model_e_uncertainty_calibrated", sens: 81.3, spec: 79.8, fwr: 20.2, bacc: 80.6, f1: 0.805, coverage: 88.5, risk: 19.4 }
-          ],
-          end_to_end_latency_ms: { p50: 57.0, p95: 89.7, fps: 17.5 },
-          provenance: {
-            mocap_lab: "University of Idaho UI-PRMD (100 Hz Vicon Optical Mocap)",
-            subjects_count: 10,
-            trials_count: 200,
-            total_mocap_frames: 55179,
-          }
-        };
+    // Never generate an artifact claiming to be verified if the API was unreachable.
+    if (!benchmark) return;
+    const reportData = {
+      benchmark_title: "MotionIQ Phase 6 Leave-One-Subject-Out Benchmark",
+      source: "MotionIQ committed research artifacts via Research API",
+      exported_at: new Date().toISOString(),
+      ...benchmark,
+    };
     const url = URL.createObjectURL(new Blob([JSON.stringify(reportData, null, 2)], { type: "application/json" }));
     const a = document.createElement("a");
     a.href = url;
@@ -111,6 +93,14 @@ export default function ResearchPage() {
             end-to-end webcam latency benchmarks.
           </p>
         </header>
+
+        <p role="status" className="rounded-2xl border border-[#E9EBED] bg-[#F0F1F3] px-4 py-3 text-xs text-[#202226]">
+          {apiStatus === "loaded"
+            ? "Research API online. Historical laboratory results loaded from the committed benchmark artifacts; webcam transfer accuracy is not established."
+            : apiStatus === "loading"
+              ? "Connecting to the research API. The figures below are a historical snapshot; live verification is pending."
+              : "Research API unavailable. Figures below are a historical snapshot, not a freshly verified run. Benchmark export is disabled until the API is reachable."}
+        </p>
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 pb-1 border-b border-[#F0F1F3]">
@@ -182,6 +172,7 @@ export default function ResearchPage() {
                 </div>
                 <button
                   onClick={downloadReport}
+                    disabled={!benchmark}
                   className="inline-flex items-center gap-2 rounded-full bg-[#202226] hover:bg-black text-white text-xs px-4 py-2 font-semibold transition shrink-0 shadow-xs"
                 >
                   <Download className="h-3.5 w-3.5" /> Export Verified Results (JSON)

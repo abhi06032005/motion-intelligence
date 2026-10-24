@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { ExerciseSession } from "../src/lib/sessionStorage";
-import { getActivityColumns, getAverageSmoothness, getDashboardSessions, getMovementMix, getRepValidityPercent } from "../src/lib/dashboardMetrics";
+import type { ExerciseSession } from "../src/lib/sessionStorage.ts";
+import { getActivityColumns, getAverageSmoothness, getDashboardSessions, getMovementMix, getRepValidityPercent } from "../src/lib/dashboardMetrics.ts";
 
 const example: ExerciseSession[] = [
   { id: "a", date: "2026-10-23 15:00", exercise: "Squat", source: "live", reps: 10, validReps: 8, smoothness: 0.8, symmetry: null, cameraView: "side", violations: [] },

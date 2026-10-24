@@ -56,115 +56,58 @@ async def get_research_summary():
                 except Exception:
                     matched_coverage = {}
 
-            models = {
-                "model_a_baseline": {
-                    "model_id": "model_a_baseline",
-                    "description": "Baseline rule-based geometric constraints with 4-state HMM classification.",
-                    "exercise_macro_f1": overall_summary.get("model_a_rules", {}).get("macro_f1", 0.687),
-                    "balanced_accuracy": overall_summary.get("model_a_rules", {}).get("balanced_accuracy_pct", 69.8) / 100.0,
-                    "rep_mae": 0.0,
-                    "rep_rmse": 0.0,
-                    "false_warning_rate": overall_summary.get("model_a_rules", {}).get("false_warning_rate_pct", 49.3) / 100.0,
-                    "brier_score": 0.302,
-                    "ece": 0.302,
-                    "abstention_rate": overall_summary.get("model_a_rules", {}).get("abstention_rate_pct", 0.0) / 100.0,
-                    "retained_accuracy": overall_summary.get("model_a_rules", {}).get("balanced_accuracy_pct", 69.8) / 100.0,
-                    "latency_p50_ms": overall_summary.get("model_a_rules", {}).get("inference_latency_ms", {}).get("p50", 0.0),
-                    "latency_p95_ms": overall_summary.get("model_a_rules", {}).get("inference_latency_ms", {}).get("p95", 0.0),
-                    "throughput_fps": 520.0,
-                },
-                "model_b_view_gated": {
-                    "model_id": "model_b_view_gated",
-                    "description": "HMM baseline augmented with real-time 3D camera view classification.",
-                    "exercise_macro_f1": overall_summary.get("model_b_temporal", {}).get("macro_f1", 0.333),
-                    "balanced_accuracy": overall_summary.get("model_b_temporal", {}).get("balanced_accuracy_pct", 50.0) / 100.0,
-                    "rep_mae": 0.0,
-                    "rep_rmse": 0.0,
-                    "false_warning_rate": overall_summary.get("model_b_temporal", {}).get("false_warning_rate_pct", 100.0) / 100.0,
-                    "brier_score": 0.50,
-                    "ece": 0.50,
-                    "abstention_rate": overall_summary.get("model_b_temporal", {}).get("abstention_rate_pct", 0.0) / 100.0,
-                    "retained_accuracy": overall_summary.get("model_b_temporal", {}).get("balanced_accuracy_pct", 50.0) / 100.0,
-                    "latency_p50_ms": overall_summary.get("model_b_temporal", {}).get("inference_latency_ms", {}).get("p50", 0.0),
-                    "latency_p95_ms": overall_summary.get("model_b_temporal", {}).get("inference_latency_ms", {}).get("p95", 0.0),
-                    "throughput_fps": 500.0,
-                },
-                "model_c_temporal": {
-                    "model_id": "model_c_temporal",
-                    "description": "Supervised temporal trajectory assessment combining angular velocities and phase dynamics.",
-                    "exercise_macro_f1": overall_summary.get("model_c_supervised_temporal", {}).get("macro_f1", 0.743),
-                    "balanced_accuracy": overall_summary.get("model_c_supervised_temporal", {}).get("balanced_accuracy_pct", 74.3) / 100.0,
-                    "rep_mae": 0.0,
-                    "rep_rmse": 0.0,
-                    "false_warning_rate": overall_summary.get("model_c_supervised_temporal", {}).get("false_warning_rate_pct", 23.0) / 100.0,
-                    "brier_score": 0.257,
-                    "ece": 0.257,
-                    "abstention_rate": overall_summary.get("model_c_supervised_temporal", {}).get("abstention_rate_pct", 0.0) / 100.0,
-                    "retained_accuracy": overall_summary.get("model_c_supervised_temporal", {}).get("balanced_accuracy_pct", 74.3) / 100.0,
-                    "latency_p50_ms": overall_summary.get("model_c_supervised_temporal", {}).get("inference_latency_ms", {}).get("p50", 0.01),
-                    "latency_p95_ms": overall_summary.get("model_c_supervised_temporal", {}).get("inference_latency_ms", {}).get("p95", 0.02),
-                    "throughput_fps": 300.0,
-                },
-                "model_d_calibrated": {
-                    "model_id": "model_d_calibrated",
-                    "description": "MotionIQ proposed model: Temporal kinematic modeling, 3D view-awareness, calibrated confidence, and selective abstention under occlusion.",
-                    "exercise_macro_f1": overall_summary.get("model_e_uncertainty_calibrated", {}).get("macro_f1", 0.805),
-                    "balanced_accuracy": overall_summary.get("model_e_uncertainty_calibrated", {}).get("balanced_accuracy_pct", 80.6) / 100.0,
-                    "rep_mae": 0.0,
-                    "rep_rmse": 0.0,
-                    "false_warning_rate": overall_summary.get("model_e_uncertainty_calibrated", {}).get("false_warning_rate_pct", 20.2) / 100.0,
-                    "brier_score": 0.1515,
-                    "ece": 0.0827,
-                    "abstention_rate": overall_summary.get("model_e_uncertainty_calibrated", {}).get("abstention_rate_pct", 11.5) / 100.0,
-                    "retained_accuracy": overall_summary.get("model_e_uncertainty_calibrated", {}).get("balanced_accuracy_pct", 80.6) / 100.0,
-                    "latency_p50_ms": 57.0,
-                    "latency_p95_ms": 89.7,
-                    "throughput_fps": 17.5,
-                },
+            # Legacy public model IDs are preserved for existing API clients.
+            # Metrics are selected from the published LOSO artifact, with no
+            # made-up rep-count error or FPS values on unmeasured benchmarks.
+            model_map = {
+                "model_a_baseline": ("model_a_rules", "Static planar rule baseline"),
+                "model_b_view_gated": ("model_b_temporal", "Temporal rule baseline"),
+                "model_c_temporal": ("model_c_supervised_temporal", "Supervised temporal model"),
+                "model_d_calibrated": ("model_e_uncertainty_calibrated", "Uncertainty-gated selective model"),
             }
+            phase7_statistics = {}
+            phase7_file = RESULTS_DIR / "phase7" / "phase7_statistical_verification.json"
+            if phase7_file.exists():
+                with open(phase7_file, "r", encoding="utf-8") as f_statistics:
+                    phase7_statistics = json.load(f_statistics)
+            calibration = phase7_statistics.get("calibration_analysis", {})
 
-            ablation_table = [
-                {
-                    "model": "model_a_baseline",
-                    "macro_f1": models["model_a_baseline"]["exercise_macro_f1"],
-                    "rep_mae": 0.0,
-                    "false_warning_rate": models["model_a_baseline"]["false_warning_rate"],
-                    "brier_score": models["model_a_baseline"]["brier_score"],
-                    "retained_accuracy": models["model_a_baseline"]["retained_accuracy"],
-                    "abstention_rate": models["model_a_baseline"]["abstention_rate"],
-                    "latency_p50_ms": models["model_a_baseline"]["latency_p50_ms"],
-                },
-                {
-                    "model": "model_b_view_gated",
-                    "macro_f1": models["model_b_view_gated"]["exercise_macro_f1"],
-                    "rep_mae": 0.0,
-                    "false_warning_rate": models["model_b_view_gated"]["false_warning_rate"],
-                    "brier_score": models["model_b_view_gated"]["brier_score"],
-                    "retained_accuracy": models["model_b_view_gated"]["retained_accuracy"],
-                    "abstention_rate": models["model_b_view_gated"]["abstention_rate"],
-                    "latency_p50_ms": models["model_b_view_gated"]["latency_p50_ms"],
-                },
-                {
-                    "model": "model_c_temporal",
-                    "macro_f1": models["model_c_temporal"]["exercise_macro_f1"],
-                    "rep_mae": 0.0,
-                    "false_warning_rate": models["model_c_temporal"]["false_warning_rate"],
-                    "brier_score": models["model_c_temporal"]["brier_score"],
-                    "retained_accuracy": models["model_c_temporal"]["retained_accuracy"],
-                    "abstention_rate": models["model_c_temporal"]["abstention_rate"],
-                    "latency_p50_ms": models["model_c_temporal"]["latency_p50_ms"],
-                },
-                {
-                    "model": "model_d_calibrated",
-                    "macro_f1": models["model_d_calibrated"]["exercise_macro_f1"],
-                    "rep_mae": 0.0,
-                    "false_warning_rate": models["model_d_calibrated"]["false_warning_rate"],
-                    "brier_score": models["model_d_calibrated"]["brier_score"],
-                    "retained_accuracy": models["model_d_calibrated"]["retained_accuracy"],
-                    "abstention_rate": models["model_d_calibrated"]["abstention_rate"],
-                    "latency_p50_ms": models["model_d_calibrated"]["latency_p50_ms"],
-                },
-            ]
+            models = {}
+            ablation_table = []
+            for public_id, (artifact_id, description) in model_map.items():
+                if artifact_id not in overall_summary:
+                    raise ValueError(f"Missing benchmark model in artifact: {artifact_id}")
+                model = overall_summary[artifact_id]
+                calibration_data = calibration.get(artifact_id, {})
+                row = {
+                    "model_id": public_id,
+                    "benchmark_model_id": artifact_id,
+                    "description": description,
+                    "exercise_macro_f1": model["macro_f1"],
+                    "balanced_accuracy": model["balanced_accuracy_pct"] / 100.0,
+                    "false_warning_rate": model["false_warning_rate_pct"] / 100.0,
+                    "abstention_rate": model["abstention_rate_pct"] / 100.0,
+                    "retained_accuracy": model["balanced_accuracy_pct"] / 100.0,
+                    "latency_p50_ms": model["inference_latency_ms"]["p50"],
+                    "latency_p95_ms": model["inference_latency_ms"]["p95"],
+                    "rep_mae": None,  # Not evaluated in the LOSO classification artifact.
+                    "rep_rmse": None,
+                    "throughput_fps": None,  # Lab inference is not webcam FPS.
+                    "brier_score": calibration_data.get("brier_score"),
+                    "ece": calibration_data.get("expected_calibration_error_ece"),
+                }
+                models[public_id] = row
+                ablation_table.append({
+                    "model": public_id,
+                    "benchmark_model_id": artifact_id,
+                    "macro_f1": row["exercise_macro_f1"],
+                    "rep_mae": row["rep_mae"],
+                    "false_warning_rate": row["false_warning_rate"],
+                    "brier_score": row["brier_score"],
+                    "retained_accuracy": row["retained_accuracy"],
+                    "abstention_rate": row["abstention_rate"],
+                    "latency_p50_ms": row["latency_p50_ms"],
+                })
 
             return {
                 **phase6_data,
@@ -183,13 +126,9 @@ async def get_research_summary():
                 },
             }
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail="Benchmark artifact could not be loaded") from e
 
-    if SUMMARY_FILE.exists():
-        with open(SUMMARY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-
-    raise HTTPException(status_code=404, detail="Benchmark artifacts not found.")
+    raise HTTPException(status_code=404, detail="Verified LOSO benchmark artifact is not available.")
 
 
 @router.get("/datasets")
