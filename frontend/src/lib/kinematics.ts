@@ -8,7 +8,7 @@
  * to guarantee scientific integrity and prevent fabricated measurements.
  */
 
-import { NormalizedLandmark } from "./mediapipe";
+import type { NormalizedLandmark } from "./mediapipe";
 
 /**
  * Calculates the interior angle (in degrees) at joint vertex B formed by segments BA and BC.

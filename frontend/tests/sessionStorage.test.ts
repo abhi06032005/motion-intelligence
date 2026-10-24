@@ -25,8 +25,8 @@ import {
   clearAllSavedSessions,
   migrateLegacySessions,
   SAMPLE_DEMO_SESSIONS,
-  ExerciseSession,
 } from "../src/lib/sessionStorage.ts";
+import type { ExerciseSession } from "../src/lib/sessionStorage.ts";
 
 beforeEach(() => {
   mockStore.clear();
